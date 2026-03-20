@@ -1,0 +1,12 @@
+{
+  "workspace": [
+    "./scripts/setup",
+    "./scripts/deploy",
+    "./scripts/status",
+    "./scripts/server",
+    "./scripts/pi"
+  ],
+  "tasks": {
+    "pi": "deno run --allow-run --allow-env --allow-read --allow-write scripts/pi/cli.ts"
+  }
+}

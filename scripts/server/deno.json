@@ -1,0 +1,7 @@
+{
+  "name": "@arachne/server",
+  "exports": "./cli.ts",
+  "tasks": {
+    "cli": "deno run --allow-run --allow-env --allow-read cli.ts"
+  }
+}

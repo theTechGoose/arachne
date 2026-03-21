@@ -1,0 +1,8 @@
+{
+  "pi": {
+    "urls": {
+      "tcp": "3.tcp.ngrok.io:12345",
+      "http": "my-pi.ngrok.app"
+    }
+  }
+}

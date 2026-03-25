@@ -10,6 +10,15 @@ const text = new TextHelpers();
 const sshHelpers = new SshHelpers();
 const USB = { host: "10.0.0.1", port: "22" };
 
+function parseTcpUrl(tcpUrl: string): { host: string; port: string } {
+  const stripped = tcpUrl.replace(/^tcp:\/\//, "");
+  const colonIdx = stripped.lastIndexOf(":");
+  if (colonIdx < 0) {
+    throw new CliError(`Error: Invalid TCP URL "${tcpUrl}". Expected format: tcp://host:port`, EXIT.GENERAL);
+  }
+  return { host: stripped.slice(0, colonIdx), port: stripped.slice(colonIdx + 1) };
+}
+
 export class TransportResolver {
   constructor(
     private readonly ssh: SshClient,
@@ -31,7 +40,7 @@ export class TransportResolver {
     const candidate: Transport = forced ?? ((await this.system.arpDetect()) ? "usb" : "wifi");
     const conn: Conn = candidate === "usb"
       ? { transport: "usb", ...USB }
-      : { transport: "wifi", ...this.configStore.loadWifi(target) };
+      : { transport: "wifi", ...await this.wifiConn(target) };
 
     if (!(await this.ssh.hasKey())) await this.ssh.setupKey(conn, text.tag(conn.transport));
 
@@ -50,7 +59,7 @@ export class TransportResolver {
         );
       }
       console.log(`${text.tag("usb")} SSH connection failed. Falling back to WiFi...`);
-      const w = this.configStore.loadWifi(target);
+      const w = await this.wifiConn(target);
       const wc: Conn = { transport: "wifi", ...w };
       const wp = await this.ssh.probe(wc);
       if (wp.ok) return wc;
@@ -61,5 +70,10 @@ export class TransportResolver {
     }
 
     throw new CliError(`${text.tag("wifi")} Error: ${sshHelpers.wrapSshErr(probe.error, conn)}`, EXIT.CONNECTION);
+  }
+
+  private async wifiConn(target: string): Promise<{ host: string; port: string }> {
+    const connectivity = await this.configStore.loadConnectivity(target);
+    return parseTcpUrl(connectivity.tcp);
   }
 }

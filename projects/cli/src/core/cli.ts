@@ -20,14 +20,18 @@ import { SystemAdapter } from "./domain/data/system/mod.ts";
 import { WifiManager } from "./domain/data/wifi/mod.ts";
 import { OverclockManager } from "./domain/data/overclock-io/mod.ts";
 
+// --- coordinators ---
+import { DeployCoordinator } from "./domain/coordinators/deploy/mod.ts";
+
 // --- entrypoints ---
 import { TransportResolver } from "./entrypoints/resolve-transport.ts";
 
 // --- bootstrap ---
 
 const CLI_DIR = new URL("../../", import.meta.url).pathname;
+const CONFIG_DIR = CLI_DIR + "config";
+const PROJECT_ROOT = new URL("../../../../", import.meta.url).pathname;
 const IMAGE_DIR = new URL("../../assets", import.meta.url).pathname;
-const SRC_DIR = new URL("../../../backend", import.meta.url).pathname;
 const USB = { host: "10.0.0.1", port: "22" };
 
 // --- wiring (constructor injection) ---
@@ -37,7 +41,7 @@ const ocHelpers = new OverclockHelpers();
 const statusFmt = new StatusFormatters();
 const ngrokBuilder = new NgrokConfigBuilder();
 const ssh = new SshClient({ user: "root", keyPath: `${Deno.env.get("HOME")}/.ssh/arachne_ed25519`, connectTimeout: 5 });
-const configStore = new ConfigStore(CLI_DIR);
+const configStore = new ConfigStore(CONFIG_DIR);
 const bootVolume = new BootVolumeAdapter();
 const system = new SystemAdapter();
 const wifi = new WifiManager(ssh);
@@ -265,13 +269,14 @@ const initCmd = new Command()
     const probe = await ssh.probe(conn);
     if (!probe.ok) die(`${text.tag("usb")} Error: ${sshHelpers.wrapSshErr(probe.error, conn)}`, EXIT.CONNECTION);
     console.log(`${text.tag("usb")} Connected to root@${USB.host}.`);
-    const [piName, pi] = configStore.getPi(TARGET);
-    if (!pi.ngrok?.tcp) die(`Error: Pi "${piName}" has no TCP URL in config.json.`, EXIT.GENERAL);
-    if (!pi.ngrok?.http) die(`Error: Pi "${piName}" has no HTTP URL in config.json.`, EXIT.GENERAL);
-    const tcpUrl = pi.ngrok.tcp;
-    const httpUrl = pi.ngrok.http;
-    const httpAuth = pi.ngrok.httpAuth;
-    const env = configStore.readDotEnv();
+    const connectivity = await configStore.loadConnectivity(TARGET);
+    if (!connectivity.tcp) die(`Error: Pi "${TARGET}" has no TCP URL in connectivity.json.`, EXIT.GENERAL);
+    if (!connectivity.http) die(`Error: Pi "${TARGET}" has no HTTP URL in connectivity.json.`, EXIT.GENERAL);
+    const tcpUrl = connectivity.tcp;
+    const httpUrl = connectivity.http;
+    const users = await configStore.loadUsers(TARGET);
+    const httpAuth = users.credentials;
+    const env = await configStore.readDotEnv();
     const authtoken = env.get("NGROK_AUTHTOKEN");
     if (!authtoken) die("Error: NGROK_AUTHTOKEN not set in .env", EXIT.GENERAL);
     console.log("\nWaiting for network...");
@@ -312,55 +317,40 @@ const initCmd = new Command()
 
 // --- deploy ---
 
-const ARACHNE_SERVICE = `[Unit]
-Description=arachne HTTP server
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-Type=simple
-ExecStart=/root/.deno/bin/deno run --allow-net --allow-read --allow-env /opt/arachne/bootstrap.ts
-WorkingDirectory=/opt/arachne
-Restart=always
-RestartSec=5
-Environment=HOME=/root
-
-[Install]
-WantedBy=multi-user.target
-`;
-
-const deployCmd = new Command()
-  .description("Deploy src/ to the Pi and restart the HTTP server")
-  // deno-lint-ignore no-explicit-any
-  .action(handleErrors(async (opts: any) => {
-    const conn = await transport.resolve(transport.getTransport(opts), TARGET);
-    console.log(`${text.tag(conn.transport)} Deploying src/ to ${TARGET}...`);
-    const tar = new Deno.Command("tar", { args: ["-cf", "-", "-C", SRC_DIR, "."], stdout: "piped", stderr: "piped" });
+const deployCoordinator = new DeployCoordinator({
+  loadTargets: (piName: string) => configStore.loadTargets(piName),
+  resolveSshConn: () => transport.resolve(transport.getTransport({}), TARGET),
+  copyDir: async (conn, localPath, remotePath) => {
+    const start = performance.now();
+    const tar = new Deno.Command("tar", { args: ["-cf", "-", "-C", localPath, "."], stdout: "piped", stderr: "piped" });
     const tarProc = tar.spawn();
     const extract = new Deno.Command("ssh", {
-      args: sshHelpers.sshArgs(conn, ssh.getConfig(), { batch: true, cmd: "mkdir -p /opt/arachne && tar -xf - -C /opt/arachne" }),
+      args: sshHelpers.sshArgs(conn, ssh.getConfig(), { batch: true, cmd: `mkdir -p ${remotePath} && tar -xf - -C ${remotePath}` }),
       stdin: "piped", stdout: "inherit", stderr: "piped",
     });
     const extractProc = extract.spawn();
     await tarProc.stdout.pipeTo(extractProc.stdin);
     const extractStatus = await extractProc.status;
-    if (!extractStatus.success) die(`${text.tag(conn.transport)} Error: Failed to copy files to Pi.`, EXIT.GENERAL);
-    console.log(`${text.tag(conn.transport)} Files copied.`);
-    const hasDeno = await ssh.exec(conn, "test -f /root/.deno/bin/deno && echo yes || echo no");
-    if (hasDeno.stdout.trim() !== "yes") {
-      console.log("Installing Deno on Pi...");
-      await ssh.exec(conn, "apt-get install -y -qq unzip >/dev/null 2>&1");
-      const install = await ssh.exec(conn, "curl -fsSL https://deno.land/install.sh | sh");
-      if (!install.ok) die(`${text.tag(conn.transport)} Error: Failed to install Deno.\n  ${install.stderr}`, EXIT.GENERAL);
+    if (!extractStatus.success) {
+      throw new CliError(`${text.tag(conn.transport)} Error: Failed to copy ${localPath} to ${remotePath}.`, EXIT.GENERAL);
     }
-    const writeService = await ssh.exec(conn, `cat > /etc/systemd/system/arachne.service << 'SVCEOF'\n${ARACHNE_SERVICE}SVCEOF`);
-    if (!writeService.ok) die(`${text.tag(conn.transport)} Error: Failed to write service file.\n  ${writeService.stderr}`, EXIT.GENERAL);
-    const startService = await ssh.exec(conn, "systemctl daemon-reload && systemctl enable arachne && systemctl restart arachne");
-    if (!startService.ok) die(`${text.tag(conn.transport)} Error: Failed to start arachne service.\n  ${startService.stderr}`, EXIT.GENERAL);
-    await new Promise((r) => setTimeout(r, 2000));
-    const check = await ssh.exec(conn, "curl -sf http://localhost:80/health");
-    if (check.ok && check.stdout === "ok") console.log(`${text.tag(conn.transport)} Deployed and running.`);
-    else console.log(`${text.tag(conn.transport)} Deployed but health check failed. Check: systemctl status arachne`);
+    const elapsed = ((performance.now() - start) / 1000).toFixed(1);
+    const dirName = localPath.replace(/\/$/, "").split("/").pop();
+    console.log(`${text.tag(conn.transport)} ${dirName}/ copied (${elapsed}s)`);
+  },
+  sshExec: (conn, cmd) => ssh.exec(conn, cmd),
+  log: (msg: string) => console.log(msg),
+  projectRoot: PROJECT_ROOT,
+  configDir: CONFIG_DIR + "/",
+});
+
+const deployCmd = new Command()
+  .description("Deploy backend, UI, and targets to the Pi")
+  .option("--dry-run", "Validate config and show deployment plan without executing")
+  .option("--fresh", "Drain backend, stop services, wipe app dirs, then deploy fresh")
+  // deno-lint-ignore no-explicit-any
+  .action(handleErrors(async (opts: any) => {
+    await deployCoordinator.run(TARGET, { dryRun: !!opts.dryRun, fresh: !!opts.fresh });
   }));
 
 // --- overclock ---

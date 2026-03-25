@@ -11,6 +11,7 @@ import { TextHelpers } from "./domain/business/text-helpers/mod.ts";
 import { OverclockHelpers } from "./domain/business/overclock-helpers/mod.ts";
 import { StatusFormatters } from "./domain/business/status-formatters/mod.ts";
 import { NgrokConfigBuilder } from "./domain/business/ngrok-config/mod.ts";
+import { ThresholdChecker } from "./domain/business/threshold-checker/mod.ts";
 
 // --- data ---
 import { ConfigStore } from "./domain/data/config-file/mod.ts";
@@ -40,6 +41,7 @@ const text = new TextHelpers();
 const ocHelpers = new OverclockHelpers();
 const statusFmt = new StatusFormatters();
 const ngrokBuilder = new NgrokConfigBuilder();
+const thresholdChecker = new ThresholdChecker();
 const ssh = new SshClient({ user: "root", keyPath: `${Deno.env.get("HOME")}/.ssh/arachne_ed25519`, connectTimeout: 5 });
 const configStore = new ConfigStore(CONFIG_DIR);
 const bootVolume = new BootVolumeAdapter();
@@ -304,6 +306,40 @@ const initCmd = new Command()
     const f2b = await ssh.exec(conn, `apt-get install -y -qq fail2ban >/dev/null 2>&1`);
     if (!f2b.ok) console.log(`${text.tag("usb")} Warning: Failed to install fail2ban. Install manually.`);
     else console.log(`${text.tag("usb")} fail2ban installed.`);
+    console.log("Installing Redis...");
+    const redis = await ssh.exec(conn, `apt-get install -y -qq redis-server >/dev/null 2>&1`);
+    if (!redis.ok) {
+      console.log(`${text.tag("usb")} Warning: Failed to install Redis. Install manually.`);
+    } else {
+      const redisCfg = [
+        `sed -i 's/^# *maxmemory .*/maxmemory 256mb/' /etc/redis/redis.conf`,
+        `grep -q '^maxmemory ' /etc/redis/redis.conf || echo 'maxmemory 256mb' >> /etc/redis/redis.conf`,
+        `sed -i 's/^# *maxmemory-policy .*/maxmemory-policy allkeys-lru/' /etc/redis/redis.conf`,
+        `grep -q '^maxmemory-policy ' /etc/redis/redis.conf || echo 'maxmemory-policy allkeys-lru' >> /etc/redis/redis.conf`,
+        `sed -i 's/^save .*//' /etc/redis/redis.conf`,
+        `echo 'save 300 1' >> /etc/redis/redis.conf`,
+        `sed -i 's/^appendonly .*/appendonly no/' /etc/redis/redis.conf`,
+        `systemctl enable redis-server`,
+        `systemctl restart redis-server`,
+      ].join(" && ");
+      const cfgResult = await ssh.exec(conn, redisCfg);
+      if (!cfgResult.ok) console.log(`${text.tag("usb")} Warning: Failed to configure Redis.\n  ${cfgResult.stderr}`);
+      // Verify Redis with retry loop (5 seconds)
+      const verify = await ssh.exec(conn, `for i in $(seq 1 5); do redis-cli ping 2>/dev/null | grep -q PONG && echo OK && exit 0; sleep 1; done; echo FAIL`);
+      if (verify.stdout.includes("OK")) {
+        console.log(`${text.tag("usb")} Redis installed and configured.`);
+      } else {
+        console.log(`${text.tag("usb")} Warning: Redis installed but ping verification failed.`);
+      }
+    }
+    console.log("Configuring journald...");
+    const journald = await ssh.exec(conn, [
+      `sed -i 's/^#\\?SystemMaxUse=.*/SystemMaxUse=100M/' /etc/systemd/journald.conf`,
+      `grep -q '^SystemMaxUse=' /etc/systemd/journald.conf || echo 'SystemMaxUse=100M' >> /etc/systemd/journald.conf`,
+      `systemctl restart systemd-journald`,
+    ].join(" && "));
+    if (!journald.ok) console.log(`${text.tag("usb")} Warning: Failed to configure journald.\n  ${journald.stderr}`);
+    else console.log(`${text.tag("usb")} journald configured (SystemMaxUse=100M).`);
     console.log("Configuring clean login...");
     await ssh.exec(conn, [`touch /root/.hushlogin`, `command -v dietpi-banner >/dev/null && dietpi-banner 0 || true`, `grep -q '^clear$' /root/.bashrc || echo 'clear' >> /root/.bashrc`].join(" && "));
     await ssh.exec(conn, `dpkg -l dropbear >/dev/null 2>&1 && apt-get remove -y -qq dropbear >/dev/null 2>&1 || true`);
@@ -513,7 +549,81 @@ const statusCmd = new Command()
     console.log(`  ngrok:      ${info.ngrok}`);
     console.log(`  First-boot: ${info.firstboot || "n/a"}`);
     if (info.failed) console.log(`  Failed:     ${info.failed}`);
+    // Backend health check
+    const health = await ssh.exec(conn, "curl -sf http://localhost:3000/health");
+    if (health.ok) {
+      try {
+        const parsed = JSON.parse(health.stdout);
+        console.log(`  Backend:    ${parsed.status} (${parsed.workers} workers)`);
+      } catch {
+        console.log(`  Backend:    ${health.stdout}`);
+      }
+    } else {
+      console.log(`  Backend:    unreachable`);
+    }
+    // Threshold warnings
+    const cpuTemp = info.cpu_temp === "n/a" ? 0 : parseInt(info.cpu_temp) / 1000;
+    const memTotal = parseInt(info.mem_total) || 1;
+    const memUsed = parseInt(info.mem_used) || 0;
+    const memPercent = (memUsed / memTotal) * 100;
+    const diskPct = parseInt(info.disk_pct) || 0;
+    const warnings = thresholdChecker.checkThresholds({ cpuTemp, memPercent, diskPercent: diskPct });
+    if (warnings.length > 0) {
+      console.log("");
+      for (const w of warnings) console.log(`  WARNING: ${w.message}`);
+      Deno.exit(EXIT.GENERAL);
+    }
   }));
+
+// --- ui ---
+
+const uiCmd = new Command()
+  .description("Open Bull Board UI in browser via SSH tunnel")
+  .option("--port <port:number>", "Override local port (default 3001)")
+  .option("--no-open", "Skip automatic browser launch")
+  // deno-lint-ignore no-explicit-any
+  .action(handleErrors(async (opts: any) => {
+    const conn = await transport.resolve(transport.getTransport(opts), TARGET);
+    const localPort = opts.port ?? 3001;
+    // Check if local port is available
+    try {
+      const listener = Deno.listen({ port: localPort });
+      listener.close();
+    } catch {
+      die(`Error: Port ${localPort} is already in use. Use --port <N> to override.`, EXIT.GENERAL);
+    }
+    console.log(`${text.tag(conn.transport)} Forwarding Pi:3001 -> localhost:${localPort}`);
+    // SSH port forward
+    const sshProc = new Deno.Command("ssh", {
+      args: [...sshHelpers.sshArgs(conn, ssh.getConfig(), { batch: true }),
+        "-N", "-L", `${localPort}:localhost:3001`],
+      stdin: "inherit", stdout: "inherit", stderr: "inherit",
+    });
+    const child = sshProc.spawn();
+    // Open browser (unless --no-open)
+    if (opts.open !== false) {
+      setTimeout(async () => {
+        await new Deno.Command("open", { args: [`http://localhost:${localPort}`] }).spawn().status;
+      }, 1000);
+    }
+    console.log(`  Bull Board: http://localhost:${localPort}`);
+    console.log("  Press Ctrl-C to stop the tunnel.");
+    await child.status;
+  }));
+
+// --- unknown subcommand handler ---
+
+const KNOWN_COMMANDS = ["setup", "init", "deploy", "status", "wifi", "overclock", "ui"];
+const subcommand = Deno.args[1];
+if (subcommand && !subcommand.startsWith("-") && !KNOWN_COMMANDS.includes(subcommand)) {
+  const suggestion = thresholdChecker.suggestCommand(subcommand, KNOWN_COMMANDS);
+  if (suggestion) {
+    console.error(`Unknown command "${subcommand}". Did you mean "${suggestion}"?`);
+  } else {
+    console.error(`Unknown command "${subcommand}".`);
+  }
+  Deno.exit(EXIT.USAGE);
+}
 
 // --- root command ---
 
@@ -549,4 +659,5 @@ await new Command()
   .command("status", statusCmd)
   .command("wifi", wifiCmd)
   .command("overclock", overclockCmd)
+  .command("ui", uiCmd)
   .parse(Deno.args.slice(1));

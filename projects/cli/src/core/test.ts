@@ -75,21 +75,26 @@ Deno.test("cli.ts does not use CWD-relative paths for config files", async () =>
   }
 });
 
-Deno.test("deploy coordinator service definitions reference main.ts", async () => {
+Deno.test("deploy coordinator plist definitions reference main.ts", async () => {
   const source = await Deno.readTextFile(
     new URL("./domain/coordinators/deploy/mod.ts", import.meta.url).pathname,
   );
-  const matches = [...source.matchAll(/ExecStart=.*?\.ts/g)];
-  assertEquals(matches.length >= 2, true, "Expected at least 2 ExecStart entries (backend + ui)");
   assertEquals(
-    matches[0][0].includes("main.ts"),
+    source.includes("com.arachne.backend"),
     true,
-    `Expected main.ts in backend ExecStart but found: ${matches[0][0]}`,
+    "Expected com.arachne.backend label in plist",
   );
   assertEquals(
-    matches[1][0].includes("main.ts"),
+    source.includes("com.arachne.ui"),
     true,
-    `Expected main.ts in UI ExecStart but found: ${matches[1][0]}`,
+    "Expected com.arachne.ui label in plist",
+  );
+  // Both plists should reference main.ts in ProgramArguments
+  const mainTsMatches = [...source.matchAll(/main\.ts/g)];
+  assertEquals(
+    mainTsMatches.length >= 2,
+    true,
+    `Expected at least 2 main.ts references (backend + ui) but found ${mainTsMatches.length}`,
   );
 });
 

@@ -30,40 +30,63 @@ export interface DeployOpts {
   fresh: boolean;
 }
 
-const BACKEND_SERVICE = `[Unit]
-Description=Arachne Backend
-After=redis-server.service
-Requires=redis-server.service
+const BACKEND_PLIST = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.arachne.backend</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>DENO_PATH</string>
+    <string>run</string>
+    <string>-A</string>
+    <string>/usr/local/var/arachne/backend/main.ts</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/usr/local/var/arachne/logs/backend.log</string>
+  <key>StandardErrorPath</key>
+  <string>/usr/local/var/arachne/logs/backend.err</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>TARGETS_DIR</key>
+    <string>/usr/local/var/arachne/targets</string>
+  </dict>
+</dict>
+</plist>`;
 
-[Service]
-Type=simple
-ExecStart=/root/.deno/bin/deno run -A /opt/arachne/backend/main.ts
-Restart=on-failure
-RestartSec=5
-StartLimitBurst=5
-StartLimitIntervalSec=60
-TimeoutStopSec=45
-
-[Install]
-WantedBy=multi-user.target
-`;
-
-const UI_SERVICE = `[Unit]
-Description=Arachne Bull Board UI
-After=redis-server.service
-
-[Service]
-Type=simple
-ExecStart=/root/.deno/bin/deno run -A /opt/arachne/ui/main.ts
-Restart=on-failure
-RestartSec=5
-StartLimitBurst=5
-StartLimitIntervalSec=60
-TimeoutStopSec=10
-
-[Install]
-WantedBy=multi-user.target
-`;
+const UI_PLIST = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.arachne.ui</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>DENO_PATH</string>
+    <string>run</string>
+    <string>-A</string>
+    <string>/usr/local/var/arachne/ui/main.ts</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/usr/local/var/arachne/logs/ui.log</string>
+  <key>StandardErrorPath</key>
+  <string>/usr/local/var/arachne/logs/ui.err</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PORT</key>
+    <string>3001</string>
+  </dict>
+</dict>
+</plist>`;
 
 const HEALTH_RETRY_INTERVAL_MS = 3000;
 const HEALTH_MAX_ATTEMPTS = 5;
@@ -88,12 +111,12 @@ export class DeployCoordinator {
       this.deps.log(`Dry-run: validation passed for "${piName}".`);
       this.deps.log(`  Targets validated: ${[...targets.keys()].join(", ")}`);
       this.deps.log(`  Deployment plan:`);
-      this.deps.log(`    Stage 1: Copy backend/ -> /opt/arachne/backend/`);
-      this.deps.log(`    Stage 2: Copy ui/ -> /opt/arachne/ui/`);
-      this.deps.log(`    Stage 3: Copy targets/ -> /opt/arachne/targets/`);
-      this.deps.log(`    Post-copy: Install Deno, cache deps, write systemd units, restart services`);
+      this.deps.log(`    Stage 1: Copy backend/ -> /usr/local/var/arachne/backend/`);
+      this.deps.log(`    Stage 2: Copy ui/ -> /usr/local/var/arachne/ui/`);
+      this.deps.log(`    Stage 3: Copy targets/ -> /usr/local/var/arachne/targets/`);
+      this.deps.log(`    Post-copy: Install Deno, cache deps, write launchd plists, load services`);
       if (opts.fresh) {
-        this.deps.log(`    Fresh mode: Will drain backend, stop services, wipe app dirs first`);
+        this.deps.log(`    Fresh mode: Will drain backend, unload services, wipe app dirs first`);
       }
       return;
     }
@@ -111,65 +134,89 @@ export class DeployCoordinator {
     const uiSrc = `${this.deps.projectRoot}projects/ui/`;
     const targetsSrc = `${this.deps.configDir}${piName}/targets/`;
 
-    await this.deps.copyDir(conn, backendSrc, "/opt/arachne/backend/");
-    await this.deps.copyDir(conn, uiSrc, "/opt/arachne/ui/");
-    await this.deps.copyDir(conn, targetsSrc, "/opt/arachne/targets/");
+    await this.deps.copyDir(conn, backendSrc, "/usr/local/var/arachne/backend/");
+    await this.deps.copyDir(conn, uiSrc, "/usr/local/var/arachne/ui/");
+    await this.deps.copyDir(conn, targetsSrc, "/usr/local/var/arachne/targets/");
 
-    // 6. Post-copy: install Deno if needed
-    const hasDeno = await this.deps.sshExec(conn, "test -f /root/.deno/bin/deno && echo yes || echo no");
+    // 6. Detect deno path
+    const denoPath = await this.detectDenoPath(conn);
+
+    // 7. Post-copy: install Deno if needed
+    const hasDeno = await this.deps.sshExec(
+      conn,
+      `export PATH=/opt/homebrew/bin:$PATH && test -f ${denoPath} && echo yes || echo no`,
+    );
     if (hasDeno.stdout.trim() !== "yes") {
-      this.deps.log("Installing Deno on Pi...");
-      await this.deps.sshExec(conn, "apt-get install -y -qq unzip >/dev/null 2>&1");
-      const install = await this.deps.sshExec(conn, "curl -fsSL https://deno.land/install.sh | sh");
+      this.deps.log("Installing Deno...");
+      const install = await this.deps.sshExec(
+        conn,
+        "export PATH=/opt/homebrew/bin:$PATH && brew install deno",
+      );
       if (!install.ok) {
         throw new CliError(`Error: Failed to install Deno.\n  ${install.stderr}`, EXIT.GENERAL);
       }
     }
 
-    // 7. Cache dependencies
+    // 8. Cache dependencies
     this.deps.log("Caching dependencies...");
-    const cache = await this.deps.sshExec(conn, "deno cache /opt/arachne/backend/main.ts");
+    const cache = await this.deps.sshExec(
+      conn,
+      `export PATH=/opt/homebrew/bin:$PATH && ${denoPath} cache /usr/local/var/arachne/backend/main.ts`,
+    );
     if (!cache.ok) {
       throw new CliError(`Error: Failed to cache dependencies.\n  ${cache.stderr}`, EXIT.GENERAL);
     }
 
-    // 8. Write systemd service files
+    // 9. Create logs directory
+    await this.deps.sshExec(conn, "mkdir -p /usr/local/var/arachne/logs");
+
+    // 10. Write launchd plist files
+    const backendPlist = BACKEND_PLIST.replaceAll("DENO_PATH", denoPath);
     const writeBackend = await this.deps.sshExec(
       conn,
-      `cat > /etc/systemd/system/arachne-backend.service << 'SVCEOF'\n${BACKEND_SERVICE}SVCEOF`,
+      `sudo tee /Library/LaunchDaemons/com.arachne.backend.plist > /dev/null << 'PLISTEOF'\n${backendPlist}\nPLISTEOF`,
     );
     if (!writeBackend.ok) {
-      throw new CliError(`Error: Failed to write backend service.\n  ${writeBackend.stderr}`, EXIT.GENERAL);
+      throw new CliError(`Error: Failed to write backend plist.\n  ${writeBackend.stderr}`, EXIT.GENERAL);
     }
 
+    const uiPlist = UI_PLIST.replaceAll("DENO_PATH", denoPath);
     const writeUi = await this.deps.sshExec(
       conn,
-      `cat > /etc/systemd/system/arachne-ui.service << 'SVCEOF'\n${UI_SERVICE}SVCEOF`,
+      `sudo tee /Library/LaunchDaemons/com.arachne.ui.plist > /dev/null << 'PLISTEOF'\n${uiPlist}\nPLISTEOF`,
     );
     if (!writeUi.ok) {
-      throw new CliError(`Error: Failed to write UI service.\n  ${writeUi.stderr}`, EXIT.GENERAL);
+      throw new CliError(`Error: Failed to write UI plist.\n  ${writeUi.stderr}`, EXIT.GENERAL);
     }
 
-    // 9. Reload, enable, restart
-    const restart = await this.deps.sshExec(
+    // 11. Load services via launchctl
+    const loadServices = await this.deps.sshExec(
       conn,
-      "systemctl daemon-reload && systemctl enable arachne-backend arachne-ui && systemctl restart arachne-backend arachne-ui",
+      "sudo launchctl load -w /Library/LaunchDaemons/com.arachne.backend.plist && sudo launchctl load -w /Library/LaunchDaemons/com.arachne.ui.plist",
     );
-    if (!restart.ok) {
-      throw new CliError(`Error: Failed to restart services.\n  ${restart.stderr}`, EXIT.GENERAL);
+    if (!loadServices.ok) {
+      throw new CliError(`Error: Failed to load services.\n  ${loadServices.stderr}`, EXIT.GENERAL);
     }
 
-    // 10. Health check with retries
+    // 12. Health check with retries
     await this.healthCheck(conn);
+  }
+
+  private async detectDenoPath(conn: Conn): Promise<string> {
+    const result = await this.deps.sshExec(
+      conn,
+      "which deno || echo /opt/homebrew/bin/deno",
+    );
+    return result.stdout.trim();
   }
 
   private async freshDrain(conn: Conn): Promise<void> {
     this.deps.log("Fresh deploy: draining backend...");
 
-    // SIGTERM the backend service
+    // SIGTERM the backend service via launchctl
     await this.deps.sshExec(
       conn,
-      "systemctl kill --signal=SIGTERM arachne-backend.service || true",
+      "sudo launchctl kill SIGTERM system/com.arachne.backend || true",
     );
 
     // Wait for drain
@@ -177,16 +224,16 @@ export class DeployCoordinator {
     this.deps.log(`Waiting ${drainMs / 1000}s for drain...`);
     await new Promise((r) => setTimeout(r, drainMs));
 
-    // Stop all services
+    // Unload all services
     await this.deps.sshExec(
       conn,
-      "systemctl stop arachne-backend.service arachne-ui.service || true",
+      "sudo launchctl unload /Library/LaunchDaemons/com.arachne.backend.plist /Library/LaunchDaemons/com.arachne.ui.plist || true",
     );
 
     // Wipe app directories (NEVER Redis data)
     await this.deps.sshExec(
       conn,
-      "rm -rf /opt/arachne/backend/ /opt/arachne/ui/ /opt/arachne/targets/",
+      "rm -rf /usr/local/var/arachne/backend/ /usr/local/var/arachne/ui/ /usr/local/var/arachne/targets/",
     );
 
     this.deps.log("Fresh deploy: app dirs wiped.");
@@ -206,6 +253,6 @@ export class DeployCoordinator {
         return;
       }
     }
-    this.deps.log("Deployed but health check failed after retries. Check: systemctl status arachne-backend");
+    this.deps.log("Deployed but health check failed after retries. Check: sudo launchctl list com.arachne.backend");
   }
 }

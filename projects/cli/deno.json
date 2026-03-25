@@ -4,5 +4,8 @@
   "exports": "./cli.ts",
   "tasks": {
     "pi": "deno run --allow-run --allow-env --allow-read --allow-write --allow-net cli.ts"
+  },
+  "imports": {
+    "#zod": "npm:zod@3.24.4"
   }
 }

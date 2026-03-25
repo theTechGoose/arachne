@@ -3,7 +3,7 @@
   "tasks": {
     "pi": "deno run --allow-run --allow-env --allow-read --allow-write --allow-net projects/cli/src/bootstrap.ts",
     "install": "deno install --allow-run --allow-env --allow-read --allow-write --allow-net -n arachne projects/cli/src/bootstrap.ts",
-    "backend": "deno run -A --env projects/backend/bootstrap.ts",
-    "backend:dev": "deno run -A --env --watch projects/backend/bootstrap.ts"
+    "backend": "deno run -A projects/backend/main.ts",
+    "backend:dev": "deno run -A --watch projects/backend/main.ts"
   }
 }

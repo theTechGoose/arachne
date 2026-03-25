@@ -1,27 +1,20 @@
 {
   "name": "@arachne/backend",
   "version": "0.1.0",
-  "exports": "./bootstrap.ts",
+  "exports": "./main.ts",
   "tasks": {
-    "start": "deno run -A --env bootstrap.ts",
-    "dev": "deno run -A --env --watch bootstrap.ts",
-    "check": "deno check bootstrap.ts"
+    "start": "deno run -A main.ts",
+    "dev": "deno run -A --watch main.ts",
+    "test": "deno test -A --no-check",
+    "check": "deno check main.ts"
   },
   "imports": {
-    "@design": "./design.ts",
     "@dto/": "./dto/",
     "@domain/": "./domain/",
     "@entrypoints/": "./entrypoints/",
     "#ioredis": "npm:ioredis@5.8.0",
     "#bullmq": "npm:bullmq",
-    "#node-cron": "npm:node-cron@3.0.3",
-    "@danet/core": "jsr:@danet/core@^2.9.6",
-    "class-validator": "npm:class-validator@0.14.1",
-    "class-transformer": "npm:class-transformer@0.5.1",
-    "nanoid": "npm:nanoid@5.0.4"
-  },
-  "compilerOptions": {
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "#zod": "npm:zod@3.24.4",
+    "#json-canonicalize": "npm:json-canonicalize@1.0.6"
   }
 }

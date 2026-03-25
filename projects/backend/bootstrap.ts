@@ -14,7 +14,7 @@ import { HealthController } from "@entrypoints/health-controller.ts";
 import { IngestController } from "@entrypoints/ingest-controller.ts";
 
 // --- Configuration ---
-const TARGETS_DIR = Deno.env.get("TARGETS_DIR") ?? "/opt/arachne/targets";
+const TARGETS_DIR = Deno.env.get("TARGETS_DIR") ?? "/usr/local/var/arachne/targets";
 const PORT = Number(Deno.env.get("BACKEND_PORT") ?? "3000");
 
 // --- 1. Data layer ---

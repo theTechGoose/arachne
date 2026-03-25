@@ -12,8 +12,8 @@ export type Metrics = {
 export class ThresholdChecker {
   checkThresholds(metrics: Metrics): Warning[] {
     const warnings: Warning[] = [];
-    if (metrics.cpuTemp > 70) {
-      warnings.push({ metric: "cpu_temp", message: `CPU temperature ${metrics.cpuTemp}°C exceeds 70°C` });
+    if (metrics.cpuTemp > 95) {
+      warnings.push({ metric: "cpu_temp", message: `CPU temperature ${metrics.cpuTemp}°C exceeds 95°C` });
     }
     if (metrics.memPercent > 85) {
       warnings.push({ metric: "memory", message: `Memory usage ${metrics.memPercent}% exceeds 85%` });

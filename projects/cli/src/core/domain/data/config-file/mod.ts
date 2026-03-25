@@ -65,12 +65,12 @@ export class ConfigStore {
     return targets;
   }
 
-  async listPis(): Promise<string[]> {
-    const pis: string[] = [];
+  async listHosts(): Promise<string[]> {
+    const hosts: string[] = [];
     for await (const entry of Deno.readDir(this.configDir)) {
-      if (entry.isDirectory) pis.push(entry.name);
+      if (entry.isDirectory) hosts.push(entry.name);
     }
-    return pis;
+    return hosts;
   }
 
   async readDotEnv(): Promise<Map<string, string>> {
@@ -79,7 +79,7 @@ export class ConfigStore {
       raw = await Deno.readTextFile(`${this.configDir}/.env`);
     } catch {
       throw new CliError(
-        "Error: .env not found.\n  Run 'deno task pi setup' first.",
+        "Error: .env not found.\n  Run 'arachne install --host' first.",
         EXIT.GENERAL,
       );
     }

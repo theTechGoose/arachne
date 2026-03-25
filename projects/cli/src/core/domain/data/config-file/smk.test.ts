@@ -132,39 +132,39 @@ Deno.test("loadTargets - throws for missing targets directory", async () => {
   }
 });
 
-// --- listPis ---
+// --- listHosts ---
 
-Deno.test("listPis - returns subdirectory names", async () => {
+Deno.test("listHosts - returns subdirectory names", async () => {
   const { baseDir, cleanup } = await makeTempConfig();
   try {
     await Deno.mkdir(`${baseDir}/pi1`, { recursive: true });
     await Deno.mkdir(`${baseDir}/pi2`, { recursive: true });
     const store = new ConfigStore(baseDir);
-    const pis = await store.listPis();
+    const pis = await store.listHosts();
     assertEquals(pis.sort(), ["pi1", "pi2"]);
   } finally {
     await cleanup();
   }
 });
 
-Deno.test("listPis - ignores files, only returns directories", async () => {
+Deno.test("listHosts - ignores files, only returns directories", async () => {
   const { baseDir, cleanup } = await makeTempConfig();
   try {
     await Deno.mkdir(`${baseDir}/pi1`, { recursive: true });
     await Deno.writeTextFile(`${baseDir}/README.md`, "ignore me");
     const store = new ConfigStore(baseDir);
-    const pis = await store.listPis();
+    const pis = await store.listHosts();
     assertEquals(pis, ["pi1"]);
   } finally {
     await cleanup();
   }
 });
 
-Deno.test("listPis - returns empty array for empty config dir", async () => {
+Deno.test("listHosts - returns empty array for empty config dir", async () => {
   const { baseDir, cleanup } = await makeTempConfig();
   try {
     const store = new ConfigStore(baseDir);
-    const pis = await store.listPis();
+    const pis = await store.listHosts();
     assertEquals(pis, []);
   } finally {
     await cleanup();

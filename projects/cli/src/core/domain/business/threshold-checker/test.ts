@@ -10,8 +10,8 @@ Deno.test("returns empty warnings when all metrics are within thresholds", () =>
   assertEquals(warnings, []);
 });
 
-Deno.test("warns when CPU temperature exceeds 70C", () => {
-  const warnings = checker.checkThresholds({ cpuTemp: 71, memPercent: 60, diskPercent: 70 });
+Deno.test("warns when CPU temperature exceeds 95C", () => {
+  const warnings = checker.checkThresholds({ cpuTemp: 96, memPercent: 60, diskPercent: 70 });
   assertEquals(warnings.length, 1);
   assertEquals(warnings[0].metric, "cpu_temp");
 });
@@ -29,12 +29,12 @@ Deno.test("warns when disk usage exceeds 85%", () => {
 });
 
 Deno.test("returns multiple warnings when multiple thresholds exceeded", () => {
-  const warnings = checker.checkThresholds({ cpuTemp: 75, memPercent: 90, diskPercent: 95 });
+  const warnings = checker.checkThresholds({ cpuTemp: 96, memPercent: 90, diskPercent: 95 });
   assertEquals(warnings.length, 3);
 });
 
 Deno.test("does not warn at exactly the threshold boundary", () => {
-  const warnings = checker.checkThresholds({ cpuTemp: 70, memPercent: 85, diskPercent: 85 });
+  const warnings = checker.checkThresholds({ cpuTemp: 95, memPercent: 85, diskPercent: 85 });
   assertEquals(warnings, []);
 });
 

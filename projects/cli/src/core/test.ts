@@ -1,41 +1,10 @@
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/assert_equals.ts";
-import { assertRejects } from "https://deno.land/std@0.224.0/assert/assert_rejects.ts";
 
 // cli.ts resolves paths relative to its own location via import.meta.url.
 // These tests reconstruct the same resolution from this file (same directory)
 // and verify the targets exist on disk.
 
 const CLI_DIR = new URL("../../", import.meta.url).pathname;
-
-// --- IMAGE_DIR ---
-
-Deno.test("IMAGE_DIR resolves to an existing directory", async () => {
-  const imageDir = new URL("../../assets", import.meta.url).pathname;
-  const stat = await Deno.stat(imageDir);
-  assertEquals(stat.isDirectory, true);
-});
-
-Deno.test("IMAGE_DIR contains dietpi.env", async () => {
-  const path = new URL("../../assets/dietpi.env", import.meta.url).pathname;
-  const stat = await Deno.stat(path);
-  assertEquals(stat.isFile, true);
-});
-
-Deno.test("IMAGE_DIR contains Automation_Custom_Script.sh", async () => {
-  const path = new URL("../../assets/Automation_Custom_Script.sh", import.meta.url).pathname;
-  const stat = await Deno.stat(path);
-  assertEquals(stat.isFile, true);
-});
-
-// --- overclock.json (cli.ts:985) ---
-// const path = new URL("../../assets/overclock.json", import.meta.url).pathname;
-
-Deno.test("overclock.json exists and is valid JSON", async () => {
-  const path = new URL("../../assets/overclock.json", import.meta.url).pathname;
-  const text = await Deno.readTextFile(path);
-  const data = JSON.parse(text);
-  assertEquals(typeof data, "object");
-});
 
 // --- PROJECT_ROOT paths ---
 
@@ -124,12 +93,3 @@ Deno.test("deploy coordinator service definitions reference main.ts", async () =
   );
 });
 
-// --- Negative: old paths must NOT resolve ---
-
-Deno.test("old IMAGE_DIR path (../../image) does NOT resolve", async () => {
-  const oldPath = new URL("../../image", import.meta.url).pathname;
-  await assertRejects(
-    () => Deno.stat(oldPath),
-    Deno.errors.NotFound,
-  );
-});

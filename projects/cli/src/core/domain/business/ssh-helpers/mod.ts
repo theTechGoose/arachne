@@ -26,17 +26,13 @@ export class SshHelpers {
     return a;
   }
 
-  wrapSshErr(raw: string, c: Conn): string {
+  wrapSshErr(raw: string): string {
     if (raw.includes("REMOTE HOST IDENTIFICATION HAS CHANGED"))
-      return `SSH host key changed (reimaged?).\n  Run: ssh-keygen -R ${c.host}`;
+      return "SSH host key changed (reimaged?).\n  Run: ssh-keygen -R <host>";
     if (raw.includes("Connection refused"))
-      return c.transport === "usb"
-        ? "Connection refused. Is the Pi powered on? Check the USB cable."
-        : "Connection refused. Is ngrok running on the Pi?";
+      return "Connection refused. Verify the SSH service is running.";
     if (raw.includes("timed out"))
-      return c.transport === "usb"
-        ? "Connection timed out. Check the USB cable."
-        : "Connection timed out. Check the ngrok tunnel.";
+      return "Connection timed out. Verify the host is reachable.";
     if (raw.includes("Permission denied"))
       return "Permission denied. SSH key may not be authorized.";
     return raw;

@@ -3,6 +3,5 @@ import { SystemAdapter } from "./mod.ts";
 
 const adapter = new SystemAdapter();
 
-Deno.test("SystemAdapter exposes arpDetect", () => { assertEquals(typeof adapter.arpDetect, "function"); });
 Deno.test("SystemAdapter exposes getMacSsid", () => { assertEquals(typeof adapter.getMacSsid, "function"); });
 Deno.test("SystemAdapter exposes readPasswordStdin", () => { assertEquals(typeof adapter.readPasswordStdin, "function"); });

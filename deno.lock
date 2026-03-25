@@ -7,6 +7,7 @@
     "npm:@types/node@*": "24.2.0",
     "npm:bullmq@*": "5.61.0",
     "npm:ioredis@5.8.0": "5.8.0",
+    "npm:json-canonicalize@1.0.6": "1.0.6",
     "npm:nanoid@5.0.9": "5.0.9",
     "npm:rxjs@*": "7.8.2",
     "npm:zod@3.24.4": "3.24.4"
@@ -226,6 +227,9 @@
         "redis-parser",
         "standard-as-callback"
       ]
+    },
+    "json-canonicalize@1.0.6": {
+      "integrity": "sha512-kP2iYpOS5SZHYhIaR1t9oG80d4uTY3jPoaBj+nimy3njtJk8+sRsVatN8pyJRDRtk9Su3+6XqA2U8k0dByJBUQ=="
     },
     "lodash.defaults@4.2.0": {
       "integrity": "sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ=="

@@ -37,38 +37,34 @@ Deno.test("overclock.json exists and is valid JSON", async () => {
   assertEquals(typeof data, "object");
 });
 
-// --- SRC_DIR (cli.ts:902) ---
-// const SRC_DIR = new URL("../../../backend", import.meta.url).pathname;
+// --- PROJECT_ROOT paths ---
 
-Deno.test("SRC_DIR resolves to an existing directory", async () => {
-  const srcDir = new URL("../../../backend", import.meta.url).pathname;
-  const stat = await Deno.stat(srcDir);
+Deno.test("backend directory resolves from project root", async () => {
+  const backendDir = new URL("../../../backend", import.meta.url).pathname;
+  const stat = await Deno.stat(backendDir);
   assertEquals(stat.isDirectory, true);
 });
 
-Deno.test("SRC_DIR contains bootstrap.ts", async () => {
-  const path = new URL("../../../backend/bootstrap.ts", import.meta.url).pathname;
-  const stat = await Deno.stat(path);
-  assertEquals(stat.isFile, true);
+Deno.test("ui directory resolves from project root", async () => {
+  const uiDir = new URL("../../../ui", import.meta.url).pathname;
+  const stat = await Deno.stat(uiDir);
+  assertEquals(stat.isDirectory, true);
 });
 
-// --- config.json (cli.ts:50) ---
-// Loaded via CLI_DIR + "config.json" — relative to cli.ts location.
+// --- config directory structure ---
+// Config files are now per-pi under CLI_DIR/config/<pi>/
+// The config/ directory is gitignored (contains pi-specific data).
+// cli.ts passes CONFIG_DIR = CLI_DIR + "config" to ConfigStore.
 
-Deno.test("config.json exists in CLI directory and is valid JSON", async () => {
-  const path = `${CLI_DIR}config.json`;
-  const text = await Deno.readTextFile(path);
-  const data = JSON.parse(text);
-  assertEquals(typeof data, "object");
-});
-
-// --- .env (cli.ts:740) ---
-// Loaded via CLI_DIR + ".env" — relative to cli.ts location.
-
-Deno.test(".env exists in CLI directory", async () => {
-  const path = `${CLI_DIR}.env`;
-  const stat = await Deno.stat(path);
-  assertEquals(stat.isFile, true);
+Deno.test("CONFIG_DIR is defined relative to CLI_DIR", async () => {
+  const source = await Deno.readTextFile(
+    new URL("./cli.ts", import.meta.url).pathname,
+  );
+  assertEquals(
+    source.includes('CLI_DIR + "config"'),
+    true,
+    "Expected CONFIG_DIR to be defined as CLI_DIR + 'config'",
+  );
 });
 
 // --- config.example.json exists (for new users) ---
@@ -110,16 +106,21 @@ Deno.test("cli.ts does not use CWD-relative paths for config files", async () =>
   }
 });
 
-Deno.test("deploy service references bootstrap.ts, not main.ts", async () => {
+Deno.test("deploy coordinator service definitions reference main.ts", async () => {
   const source = await Deno.readTextFile(
-    new URL("./cli.ts", import.meta.url).pathname,
+    new URL("./domain/coordinators/deploy/mod.ts", import.meta.url).pathname,
   );
-  const match = source.match(/ExecStart=.*?\.ts/);
-  if (!match) throw new Error("No ExecStart with .ts found in cli.ts");
+  const matches = [...source.matchAll(/ExecStart=.*?\.ts/g)];
+  assertEquals(matches.length >= 2, true, "Expected at least 2 ExecStart entries (backend + ui)");
   assertEquals(
-    match[0].includes("bootstrap.ts"),
+    matches[0][0].includes("main.ts"),
     true,
-    `Expected bootstrap.ts in ExecStart but found: ${match[0]}`,
+    `Expected main.ts in backend ExecStart but found: ${matches[0][0]}`,
+  );
+  assertEquals(
+    matches[1][0].includes("main.ts"),
+    true,
+    `Expected main.ts in UI ExecStart but found: ${matches[1][0]}`,
   );
 });
 

@@ -43,7 +43,7 @@ export class SshClient {
     }
   }
 
-  async setupKey(c: Conn, tag: string) {
+  async setupKey(c: Conn) {
     console.log("Generating SSH key...");
     const kg = new Deno.Command("ssh-keygen", {
       args: ["-t", "ed25519", "-f", this.config.keyPath, "-N", "", "-C", "arachne"],
@@ -51,7 +51,7 @@ export class SshClient {
     });
     if (!(await kg.output()).success)
       throw new Error("Failed to generate SSH key.");
-    console.log(`\n${tag} Copying key to ${this.config.user}@${c.host}:${c.port}...`);
+    console.log(`\nCopying key to ${this.config.user}@${c.host}:${c.port}...`);
     console.log("You will be prompted for the password.\n");
     const cp = new Deno.Command("ssh-copy-id", {
       args: ["-i", this.config.keyPath, "-p", c.port, `${this.config.user}@${c.host}`],

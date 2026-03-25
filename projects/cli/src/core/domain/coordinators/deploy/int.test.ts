@@ -22,7 +22,7 @@ function stubTarget(overrides?: Partial<Target>): Target {
   };
 }
 
-const CONN: Conn = { transport: "wifi", host: "192.168.1.10", port: "22" };
+const CONN: Conn = { host: "192.168.1.10", port: "22" };
 
 function makeDeps(overrides?: Partial<DeployDeps>): DeployDeps {
   const calls: string[] = [];

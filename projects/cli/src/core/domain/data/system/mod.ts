@@ -1,23 +1,6 @@
 import { CliError, EXIT } from "../../../dto/exit-codes.ts";
 
 export class SystemAdapter {
-  private readonly USB_HOST = "10.0.0.1";
-  private readonly ARP_TIMEOUT = 2;
-
-  async arpDetect(): Promise<boolean> {
-    try {
-      const p = new Deno.Command("arp", { args: ["-n", this.USB_HOST], stdout: "piped", stderr: "piped" });
-      const child = p.spawn();
-      const timer = setTimeout(() => { try { child.kill(); } catch { /* already exited */ } }, this.ARP_TIMEOUT * 1000);
-      const o = await child.output();
-      clearTimeout(timer);
-      const out = new TextDecoder().decode(o.stdout);
-      return out.includes("at ") && !out.includes("(incomplete)");
-    } catch {
-      return false;
-    }
-  }
-
   async getMacSsid(): Promise<string> {
     const p = new Deno.Command("ipconfig", { args: ["getsummary", "en0"], stdout: "piped", stderr: "piped" });
     const out = new TextDecoder().decode((await p.output()).stdout);

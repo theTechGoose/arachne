@@ -30,7 +30,7 @@ Deno.test("SshClient exposes buildArgs method", () => {
 });
 
 Deno.test("SshClient.buildArgs produces correct arg array", () => {
-  const conn = { transport: "usb" as const, host: "10.0.0.1", port: "22" };
+  const conn = { host: "10.0.0.1", port: "22" };
   const args = client.buildArgs(conn);
   assertEquals(args.includes("-i"), true);
   assertEquals(args.includes("/tmp/test_key"), true);

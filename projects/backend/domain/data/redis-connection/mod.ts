@@ -15,6 +15,7 @@ export class RedisConnection {
       host: this.#host,
       port: this.#port,
       lazyConnect: true,
+      maxRetriesPerRequest: null,
     });
     await this.#client.connect();
   }

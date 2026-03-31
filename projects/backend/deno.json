@@ -15,6 +15,11 @@
     "#ioredis": "npm:ioredis@5.8.0",
     "#bullmq": "npm:bullmq",
     "#zod": "npm:zod@3.24.4",
-    "#json-canonicalize": "npm:json-canonicalize@1.0.6"
+    "#json-canonicalize": "npm:json-canonicalize@1.0.6",
+    "#bull-board/api": "npm:@bull-board/api",
+    "#bull-board/bullmq": "npm:@bull-board/api/bullMQAdapter",
+    "#bull-board/hono": "npm:@bull-board/hono",
+    "#hono": "npm:hono",
+    "#hono/deno": "npm:hono/deno"
   }
 }

@@ -12,6 +12,13 @@ import { IngestCoordinator } from "@domain/coordinators/ingest/mod.ts";
 import { HealthCheck } from "@domain/coordinators/health-check/mod.ts";
 import { HealthController } from "@entrypoints/health-controller.ts";
 import { IngestController } from "@entrypoints/ingest-controller.ts";
+import { StepsController } from "@entrypoints/steps-controller.ts";
+import { createBullBoard } from "#bull-board/api";
+import { BullMQAdapter } from "#bull-board/bullmq";
+import { HonoAdapter } from "#bull-board/hono";
+import { Hono } from "#hono";
+import { serveStatic } from "#hono/deno";
+import { Queue } from "#bullmq";
 
 // --- Configuration ---
 const TARGETS_DIR = Deno.env.get("TARGETS_DIR") ?? "/usr/local/var/arachne/targets";
@@ -75,30 +82,112 @@ const healthCheck = new HealthCheck({
   workerCount: () => workerManager.getWorkerCount(),
 });
 
-// --- 5. Entrypoints ---
+// --- 5. Bull Board ---
+const serverAdapter = new HonoAdapter(serveStatic);
+serverAdapter.setBasePath("/ui");
+createBullBoard({
+  queues: [...targets.keys()].map((name) =>
+    new BullMQAdapter(new Queue(name, { connection: redisConnection.getClient() as never }))
+  ),
+  serverAdapter,
+});
+// --- 6. Entrypoints ---
 const healthController = new HealthController({
   check: () => healthCheck.check(),
 });
 const ingestController = new IngestController({
   ingest: (req) => ingestCoordinator.ingest(req),
 });
+const stepsController = new StepsController({ targets });
 
-// --- 6. HTTP server ---
-const handler = (req: Request): Promise<Response> => {
-  const url = new URL(req.url);
-  if (req.method === "GET" && url.pathname === "/health") {
-    return healthController.handle(req);
-  }
-  if (req.method === "POST" && url.pathname === "/ingest") {
-    return ingestController.handle(req);
-  }
-  return Promise.resolve(new Response("Not Found", { status: 404 }));
-};
+// --- 7. HTTP server ---
+const SWAGGER_HTML = `<!DOCTYPE html>
+<html>
+<head>
+  <title>Arachne API</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
+</head>
+<body>
+<div id="swagger-ui"></div>
+<script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+<script>
+SwaggerUIBundle({
+  spec: {
+    openapi: "3.0.0",
+    info: { title: "Arachne", version: "1.0.0", description: "Job orchestration API" },
+    paths: {
+      "/health": {
+        get: {
+          summary: "Health check",
+          responses: {
+            "200": { description: "Healthy", content: { "application/json": { schema: { type: "object", properties: { status: { type: "string", enum: ["ok", "degraded"] }, redis: { type: "boolean" }, workers: { type: "number" } } } } } },
+            "503": { description: "Degraded" }
+          }
+        }
+      },
+      "/steps": {
+        get: {
+          summary: "List loaded targets",
+          responses: {
+            "200": { description: "OK", content: { "application/json": { schema: { type: "object", properties: { steps: { type: "array", items: { type: "string" } } } } } } }
+          }
+        }
+      },
+      "/ingest": {
+        post: {
+          summary: "Create a flow",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["steps"],
+                  properties: {
+                    steps: { type: "array", items: { type: "string" }, description: "Ordered list of target names" },
+                    payload: { type: "object", description: "Override fields merged into step 0", properties: { route: { type: "array", items: { type: "string" } }, method: { type: "string", enum: ["GET","POST","PUT","PATCH","DELETE"] }, headers: { type: "object" }, query: { type: "object" }, body: {} } },
+                    nonce: { type: "string", description: "Bypass dedup" },
+                    matureAt: { type: "string", format: "date-time", description: "Delay execution until this time" }
+                  }
+                },
+                example: { steps: ["sample"], payload: { query: { foo: "bar" } } }
+              }
+            }
+          },
+          responses: {
+            "200": { description: "Flow created", content: { "application/json": { schema: { type: "object", properties: { flowId: { type: "string" }, jobs: { type: "array", items: { type: "object", properties: { id: { type: "string" }, step: { type: "string" }, queue: { type: "string" } } } }, duplicate: { type: "boolean" } } } } } },
+            "400": { description: "Invalid steps or empty steps" },
+            "422": { description: "Invalid payload or date" },
+            "500": { description: "Flow creation failed" },
+            "503": { description: "Redis unavailable" }
+          }
+        }
+      }
+    }
+  },
+  dom_id: "#swagger-ui",
+  presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
+  layout: "BaseLayout"
+});
+</script>
+</body>
+</html>`;
 
-const server = Deno.serve({ port: PORT }, handler);
+const app = new Hono();
+app.get("/health", (c) => healthController.handle(c.req.raw));
+app.get("/steps", (c) => stepsController.handle(c.req.raw));
+app.post("/ingest", (c) => ingestController.handle(c.req.raw));
+app.get("/", (c) => c.html(SWAGGER_HTML));
+app.get("/docs", (c) => c.html(SWAGGER_HTML));
+app.get("/ui/", (c) => c.redirect("/ui"));
+app.route("/ui", serverAdapter.registerPlugin());
+
+const server = Deno.serve({ port: PORT }, app.fetch);
 console.log(`Arachne backend listening on port ${PORT}`);
 
-// --- 7. Graceful shutdown ---
+// --- 8. Graceful shutdown ---
 Deno.addSignalListener("SIGTERM", async () => {
   console.log("SIGTERM received, shutting down...");
   await server.shutdown();

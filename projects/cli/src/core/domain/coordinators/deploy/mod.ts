@@ -30,7 +30,8 @@ export interface DeployOpts {
   fresh: boolean;
 }
 
-const BACKEND_PLIST = `<?xml version="1.0" encoding="UTF-8"?>
+function backendPlist(denoPath: string, homeDir: string): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -38,55 +39,29 @@ const BACKEND_PLIST = `<?xml version="1.0" encoding="UTF-8"?>
   <string>com.arachne.backend</string>
   <key>ProgramArguments</key>
   <array>
-    <string>DENO_PATH</string>
+    <string>${denoPath}</string>
     <string>run</string>
     <string>-A</string>
-    <string>/usr/local/var/arachne/backend/main.ts</string>
+    <string>${homeDir}/arachne/backend/main.ts</string>
   </array>
   <key>RunAtLoad</key>
   <true/>
   <key>KeepAlive</key>
   <true/>
   <key>StandardOutPath</key>
-  <string>/usr/local/var/arachne/logs/backend.log</string>
+  <string>${homeDir}/arachne/logs/backend.log</string>
   <key>StandardErrorPath</key>
-  <string>/usr/local/var/arachne/logs/backend.err</string>
+  <string>${homeDir}/arachne/logs/backend.err</string>
   <key>EnvironmentVariables</key>
   <dict>
+    <key>HOME</key>
+    <string>${homeDir}</string>
     <key>TARGETS_DIR</key>
-    <string>/usr/local/var/arachne/targets</string>
+    <string>${homeDir}/arachne/targets</string>
   </dict>
 </dict>
 </plist>`;
-
-const UI_PLIST = `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>
-  <string>com.arachne.ui</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>DENO_PATH</string>
-    <string>run</string>
-    <string>-A</string>
-    <string>/usr/local/var/arachne/ui/main.ts</string>
-  </array>
-  <key>RunAtLoad</key>
-  <true/>
-  <key>KeepAlive</key>
-  <true/>
-  <key>StandardOutPath</key>
-  <string>/usr/local/var/arachne/logs/ui.log</string>
-  <key>StandardErrorPath</key>
-  <string>/usr/local/var/arachne/logs/ui.err</string>
-  <key>EnvironmentVariables</key>
-  <dict>
-    <key>PORT</key>
-    <string>3001</string>
-  </dict>
-</dict>
-</plist>`;
+}
 
 const HEALTH_RETRY_INTERVAL_MS = 3000;
 const HEALTH_MAX_ATTEMPTS = 5;
@@ -124,99 +99,100 @@ export class DeployCoordinator {
     // 3. Resolve SSH connection
     const conn = await this.deps.resolveSshConn();
 
-    // 4. Fresh mode: drain and wipe
+    // 4. Detect remote home dir
+    const homeResult = await this.deps.sshExec(conn, "echo $HOME");
+    if (!homeResult.ok || !homeResult.stdout.trim()) {
+      throw new CliError("Error: Failed to detect remote home directory.", EXIT.GENERAL);
+    }
+    const homeDir = homeResult.stdout.trim();
+    const arachneDir = `${homeDir}/arachne`;
+
+    // 5. Fresh mode: drain and wipe
     if (opts.fresh) {
-      await this.freshDrain(conn);
+      await this.freshDrain(conn, arachneDir);
     }
 
-    // 5. Copy stages
+    // 6. Copy stages
     const backendSrc = `${this.deps.projectRoot}projects/backend/`;
     const uiSrc = `${this.deps.projectRoot}projects/ui/`;
-    const targetsSrc = `${this.deps.configDir}${piName}/targets/`;
+    const targetsSrc = `${this.deps.projectRoot}targets/`;
 
-    await this.deps.copyDir(conn, backendSrc, "/usr/local/var/arachne/backend/");
-    await this.deps.copyDir(conn, uiSrc, "/usr/local/var/arachne/ui/");
-    await this.deps.copyDir(conn, targetsSrc, "/usr/local/var/arachne/targets/");
+    await this.deps.copyDir(conn, backendSrc, `${arachneDir}/backend/`);
+    await this.deps.copyDir(conn, uiSrc, `${arachneDir}/ui/`);
+    await this.deps.copyDir(conn, targetsSrc, `${arachneDir}/targets/`);
 
-    // 6. Detect deno path
+    // 7. Detect deno path
     const denoPath = await this.detectDenoPath(conn);
 
-    // 7. Post-copy: install Deno if needed
+    // 8. Post-copy: install Deno if needed
     const hasDeno = await this.deps.sshExec(
       conn,
-      `export PATH=/opt/homebrew/bin:$PATH && test -f ${denoPath} && echo yes || echo no`,
+      `test -f ${denoPath} && echo yes || echo no`,
     );
     if (hasDeno.stdout.trim() !== "yes") {
-      this.deps.log("Installing Deno...");
-      const install = await this.deps.sshExec(
-        conn,
-        "export PATH=/opt/homebrew/bin:$PATH && brew install deno",
-      );
-      if (!install.ok) {
-        throw new CliError(`Error: Failed to install Deno.\n  ${install.stderr}`, EXIT.GENERAL);
-      }
+      throw new CliError(`Error: Deno not found at ${denoPath}. Install Deno on the remote first.`, EXIT.GENERAL);
     }
 
-    // 8. Cache dependencies
+    // 9. Write root deno.json so Deno workspace resolution doesn't choke
+    await this.deps.sshExec(
+      conn,
+      `echo '{"workspace":["./backend"]}' > ${arachneDir}/deno.json`,
+    );
+
+    // 10. Cache dependencies
     this.deps.log("Caching dependencies...");
     const cache = await this.deps.sshExec(
       conn,
-      `export PATH=/opt/homebrew/bin:$PATH && ${denoPath} cache /usr/local/var/arachne/backend/main.ts`,
+      `${denoPath} cache ${arachneDir}/backend/main.ts`,
     );
     if (!cache.ok) {
       throw new CliError(`Error: Failed to cache dependencies.\n  ${cache.stderr}`, EXIT.GENERAL);
     }
 
-    // 9. Create logs directory
-    await this.deps.sshExec(conn, "mkdir -p /usr/local/var/arachne/logs");
+    // 11. Create logs directory
+    await this.deps.sshExec(conn, `mkdir -p ${arachneDir}/logs`);
 
-    // 10. Write launchd plist files
-    const backendPlist = BACKEND_PLIST.replaceAll("DENO_PATH", denoPath);
+    // 11. Write launchd plist (user-level LaunchAgent, no sudo)
+    const plist = backendPlist(denoPath, homeDir);
+    const launchAgentsDir = `${homeDir}/Library/LaunchAgents`;
+    const plistPath = `${launchAgentsDir}/com.arachne.backend.plist`;
     const writeBackend = await this.deps.sshExec(
       conn,
-      `sudo tee /Library/LaunchDaemons/com.arachne.backend.plist > /dev/null << 'PLISTEOF'\n${backendPlist}\nPLISTEOF`,
+      `mkdir -p ${launchAgentsDir} && cat > ${plistPath} << 'PLISTEOF'\n${plist}\nPLISTEOF`,
     );
     if (!writeBackend.ok) {
       throw new CliError(`Error: Failed to write backend plist.\n  ${writeBackend.stderr}`, EXIT.GENERAL);
     }
 
-    const uiPlist = UI_PLIST.replaceAll("DENO_PATH", denoPath);
-    const writeUi = await this.deps.sshExec(
+    // 12. Reload service (unload first in case it's already running)
+    await this.deps.sshExec(conn, `launchctl unload ${plistPath} 2>/dev/null || true`);
+    const loadService = await this.deps.sshExec(
       conn,
-      `sudo tee /Library/LaunchDaemons/com.arachne.ui.plist > /dev/null << 'PLISTEOF'\n${uiPlist}\nPLISTEOF`,
+      `launchctl load -w ${plistPath}`,
     );
-    if (!writeUi.ok) {
-      throw new CliError(`Error: Failed to write UI plist.\n  ${writeUi.stderr}`, EXIT.GENERAL);
+    if (!loadService.ok) {
+      throw new CliError(`Error: Failed to load backend service.\n  ${loadService.stderr}`, EXIT.GENERAL);
     }
 
-    // 11. Load services via launchctl
-    const loadServices = await this.deps.sshExec(
-      conn,
-      "sudo launchctl load -w /Library/LaunchDaemons/com.arachne.backend.plist && sudo launchctl load -w /Library/LaunchDaemons/com.arachne.ui.plist",
-    );
-    if (!loadServices.ok) {
-      throw new CliError(`Error: Failed to load services.\n  ${loadServices.stderr}`, EXIT.GENERAL);
-    }
-
-    // 12. Health check with retries
+    // 13. Health check with retries
     await this.healthCheck(conn);
   }
 
   private async detectDenoPath(conn: Conn): Promise<string> {
     const result = await this.deps.sshExec(
       conn,
-      "which deno || echo /opt/homebrew/bin/deno",
+      "command -v deno 2>/dev/null || echo $HOME/.deno/bin/deno",
     );
     return result.stdout.trim();
   }
 
-  private async freshDrain(conn: Conn): Promise<void> {
+  private async freshDrain(conn: Conn, arachneDir: string): Promise<void> {
     this.deps.log("Fresh deploy: draining backend...");
 
     // SIGTERM the backend service via launchctl
     await this.deps.sshExec(
       conn,
-      "sudo launchctl kill SIGTERM system/com.arachne.backend || true",
+      "launchctl kill SIGTERM gui/$(id -u)/com.arachne.backend 2>/dev/null || true",
     );
 
     // Wait for drain
@@ -224,16 +200,16 @@ export class DeployCoordinator {
     this.deps.log(`Waiting ${drainMs / 1000}s for drain...`);
     await new Promise((r) => setTimeout(r, drainMs));
 
-    // Unload all services
+    // Unload service
     await this.deps.sshExec(
       conn,
-      "sudo launchctl unload /Library/LaunchDaemons/com.arachne.backend.plist /Library/LaunchDaemons/com.arachne.ui.plist || true",
+      "launchctl unload ~/Library/LaunchAgents/com.arachne.backend.plist 2>/dev/null || true",
     );
 
     // Wipe app directories (NEVER Redis data)
     await this.deps.sshExec(
       conn,
-      "rm -rf /usr/local/var/arachne/backend/ /usr/local/var/arachne/ui/ /usr/local/var/arachne/targets/",
+      `rm -rf ${arachneDir}/backend/ ${arachneDir}/ui/ ${arachneDir}/targets/`,
     );
 
     this.deps.log("Fresh deploy: app dirs wiped.");

@@ -37,13 +37,17 @@ export class ConfigStore {
 
   async loadTargets(piName: string): Promise<Map<string, Target>> {
     const dir = `${this.configDir}/${piName}/targets`;
+    return this.loadTargetsFromDir(dir);
+  }
+
+  async loadTargetsFromDir(dir: string): Promise<Map<string, Target>> {
     const targets = new Map<string, Target>();
     let entries: AsyncIterable<Deno.DirEntry>;
     try {
       entries = Deno.readDir(dir);
     } catch {
       throw new CliError(
-        `Error: targets/ directory not found for "${piName}".\n  Expected at: ${dir}`,
+        `Error: targets/ directory not found.\n  Expected at: ${dir}`,
         EXIT.GENERAL,
       );
     }

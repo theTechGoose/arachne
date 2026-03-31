@@ -31,8 +31,7 @@ export class WorkerManager {
 
   createWorkers(targets: Map<string, Target>): void {
     for (const [targetName, target] of targets) {
-      const redis = this.#redisConnection.getClient();
-      const connection = redis ? (redis as unknown as { duplicate: () => unknown }).duplicate() : undefined;
+      const connection = this.#redisConnection.getClient();
 
       const processorFn = (job: BullMqJob) => this.#processor(job, target);
 

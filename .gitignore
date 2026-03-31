@@ -1,4 +1,5 @@
 .DS_Store
+targets/
 .env
 **/config.json
 *.local

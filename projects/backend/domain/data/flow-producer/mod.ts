@@ -1,4 +1,4 @@
-import { FlowProducer } from "#bullmq";
+import { FlowProducer, Queue } from "#bullmq";
 import type { FlowNode } from "@domain/business/flow-builder/mod.ts";
 import type { IngestJobResponse } from "@dto/ingest.ts";
 
@@ -32,6 +32,12 @@ export class FlowProducerAdapter {
 
     this.#producer = new FlowProducer({ connection: client as never });
 
+    const rootJobId = flowTree.opts.jobId as string;
+    const queue = new Queue(flowTree.queueName, { connection: client as never });
+    const existing = await queue.getJob(rootJobId);
+    await queue.close();
+    const duplicate = existing !== undefined && existing !== null;
+
     const flow = await this.#producer.add(flowTree);
 
     const jobs: IngestJobResponse[] = [];
@@ -56,7 +62,7 @@ export class FlowProducerAdapter {
     return {
       flowId,
       jobs,
-      duplicate: false,
+      duplicate,
     };
   }
 

@@ -41,7 +41,7 @@ export class WorkerProcessor {
     let body: unknown;
     let route: string[];
 
-    if (job.getChildrenValues) {
+    if (Object.keys(job.data).length === 0) {
       // Step 1+: get previous step's response from children values
       const childrenValues = await job.getChildrenValues();
       const previousResponse = Object.values(childrenValues)[0];
@@ -71,10 +71,13 @@ export class WorkerProcessor {
 
     const bodyMethods = ["POST", "PUT", "PATCH"];
     const fetchBody = bodyMethods.includes(method) ? JSON.stringify(body) : undefined;
+    const fetchHeaders = fetchBody !== undefined
+      ? { "content-type": "application/json", ...headers }
+      : headers;
 
     const response = await this.#fetch(url, {
       method,
-      headers,
+      headers: fetchHeaders,
       body: fetchBody,
       signal: AbortSignal.timeout(target.timeoutMs),
     });

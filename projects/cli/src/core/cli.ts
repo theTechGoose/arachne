@@ -121,7 +121,7 @@ const installCmd = new Command()
 // --- deploy ---
 
 const deployCoordinator = new DeployCoordinator({
-  loadTargets: (piName: string) => configStore.loadTargets(piName),
+  loadTargets: (_piName: string) => configStore.loadTargetsFromDir(`${PROJECT_ROOT}targets`),
   resolveSshConn: () => transport.resolve(TARGET),
   copyDir: async (conn, localPath, remotePath) => {
     const start = performance.now();
@@ -245,7 +245,7 @@ const uiCmd = new Command()
     // SSH port forward
     const sshProc = new Deno.Command("ssh", {
       args: [...sshHelpers.sshArgs(conn, ssh.getConfig(), { batch: true }),
-        "-N", "-L", `${localPort}:localhost:3001`],
+        "-N", "-L", `${localPort}:localhost:3000`],
       stdin: "inherit", stdout: "inherit", stderr: "inherit",
     });
     const child = sshProc.spawn();

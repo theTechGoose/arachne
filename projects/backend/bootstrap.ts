@@ -2,17 +2,22 @@ import { RedisConnection } from "@domain/data/redis-connection/mod.ts";
 import { TargetLoader } from "@domain/data/target-loader/mod.ts";
 import { FlowProducerAdapter } from "@domain/data/flow-producer/mod.ts";
 import { WorkerManager } from "@domain/data/worker-manager/mod.ts";
+import { UserStore } from "@domain/data/user-store/mod.ts";
 import { JobIdGenerator } from "@domain/business/job-id-generator/mod.ts";
 import { FlowBuilder } from "@domain/business/flow-builder/mod.ts";
 import { MergeRules } from "@domain/business/merge-rules/mod.ts";
 import { ResponseClassifier } from "@domain/business/response-classifier/mod.ts";
+import { Auth } from "@domain/business/auth/mod.ts";
 import { StartupCoordinator, StartupError } from "@domain/coordinators/startup/mod.ts";
 import { WorkerProcessor } from "@domain/coordinators/worker-processor/mod.ts";
 import { IngestCoordinator } from "@domain/coordinators/ingest/mod.ts";
 import { HealthCheck } from "@domain/coordinators/health-check/mod.ts";
+import { UserManager } from "@domain/coordinators/user-manager/mod.ts";
 import { HealthController } from "@entrypoints/health-controller.ts";
 import { IngestController } from "@entrypoints/ingest-controller.ts";
 import { StepsController } from "@entrypoints/steps-controller.ts";
+import { UsersController } from "@entrypoints/users-controller.ts";
+import { requireAuth, requireAuthOrBootstrap } from "@entrypoints/auth-middleware.ts";
 import { createBullBoard } from "#bull-board/api";
 import { BullMQAdapter } from "#bull-board/bullmq";
 import { HonoAdapter } from "#bull-board/hono";
@@ -27,6 +32,7 @@ const PORT = Number(Deno.env.get("BACKEND_PORT") ?? "3000");
 // --- 1. Data layer ---
 const redisConnection = new RedisConnection();
 const targetLoader = new TargetLoader({ targetsDir: TARGETS_DIR });
+const userStore = new UserStore(redisConnection);
 
 // --- 2. Startup: load targets, connect & verify Redis ---
 const startup = new StartupCoordinator({
@@ -49,6 +55,7 @@ try {
 }
 
 // --- 3. Business logic ---
+const auth = new Auth();
 const jobIdGenerator = new JobIdGenerator();
 const mergeRules = new MergeRules();
 const responseClassifier = new ResponseClassifier();
@@ -58,6 +65,7 @@ const flowBuilder = new FlowBuilder({
 });
 
 // --- 4. Coordinators ---
+const userManager = new UserManager({ auth, userStore });
 const workerProcessor = new WorkerProcessor({
   mergeRules,
   responseClassifier,
@@ -99,6 +107,7 @@ const ingestController = new IngestController({
   ingest: (req) => ingestCoordinator.ingest(req),
 });
 const stepsController = new StepsController({ targets });
+const usersController = new UsersController({ userManager });
 
 // --- 7. HTTP server ---
 const SWAGGER_HTML = `<!DOCTYPE html>
@@ -138,6 +147,7 @@ SwaggerUIBundle({
       "/ingest": {
         post: {
           summary: "Create a flow",
+          security: [{ basicAuth: [] }],
           requestBody: {
             required: true,
             content: {
@@ -159,11 +169,97 @@ SwaggerUIBundle({
           responses: {
             "200": { description: "Flow created", content: { "application/json": { schema: { type: "object", properties: { flowId: { type: "string" }, jobs: { type: "array", items: { type: "object", properties: { id: { type: "string" }, step: { type: "string" }, queue: { type: "string" } } } }, duplicate: { type: "boolean" } } } } } },
             "400": { description: "Invalid steps or empty steps" },
+            "401": { description: "Unauthorized" },
+            "403": { description: "Missing queue permission" },
             "422": { description: "Invalid payload or date" },
             "500": { description: "Flow creation failed" },
             "503": { description: "Redis unavailable" }
           }
         }
+      },
+      "/users": {
+        get: {
+          summary: "List all users",
+          security: [{ basicAuth: [] }],
+          responses: {
+            "200": { description: "OK", content: { "application/json": { schema: { type: "array", items: { type: "object", properties: { username: { type: "string" }, permissions: { type: "array", items: { type: "string", enum: ["auth", "queue"] } }, status: { type: "string", enum: ["active", "inactive"] } } } } } } },
+            "401": { description: "Unauthorized" },
+            "403": { description: "Missing auth permission" }
+          }
+        },
+        post: {
+          summary: "Create a user (open if no users exist)",
+          security: [{ basicAuth: [] }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["username", "password", "permissions"],
+                  properties: {
+                    username: { type: "string" },
+                    password: { type: "string" },
+                    permissions: { type: "array", items: { type: "string", enum: ["auth", "queue"] } }
+                  }
+                },
+                example: { username: "bootstrap", password: "dookster", permissions: ["auth"] }
+              }
+            }
+          },
+          responses: {
+            "201": { description: "User created" },
+            "400": { description: "Invalid request" },
+            "401": { description: "Unauthorized" },
+            "403": { description: "Missing auth permission" },
+            "409": { description: "User already exists" }
+          }
+        }
+      },
+      "/users/{username}": {
+        put: {
+          summary: "Update a user",
+          security: [{ basicAuth: [] }],
+          parameters: [{ name: "username", in: "path", required: true, schema: { type: "string" } }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    password: { type: "string" },
+                    permissions: { type: "array", items: { type: "string", enum: ["auth", "queue"] } },
+                    status: { type: "string", enum: ["active", "inactive"] }
+                  }
+                }
+              }
+            }
+          },
+          responses: {
+            "200": { description: "User updated" },
+            "400": { description: "Invalid request" },
+            "401": { description: "Unauthorized" },
+            "403": { description: "Missing auth permission" },
+            "404": { description: "User not found" }
+          }
+        },
+        delete: {
+          summary: "Delete a user",
+          security: [{ basicAuth: [] }],
+          parameters: [{ name: "username", in: "path", required: true, schema: { type: "string" } }],
+          responses: {
+            "204": { description: "User deleted" },
+            "401": { description: "Unauthorized" },
+            "403": { description: "Missing auth permission" },
+            "404": { description: "User not found" }
+          }
+        }
+      }
+    },
+    components: {
+      securitySchemes: {
+        basicAuth: { type: "http", scheme: "basic" }
       }
     }
   },
@@ -178,7 +274,31 @@ SwaggerUIBundle({
 const app = new Hono();
 app.get("/health", (c) => healthController.handle(c.req.raw));
 app.get("/steps", (c) => stepsController.handle(c.req.raw));
-app.post("/ingest", (c) => ingestController.handle(c.req.raw));
+app.post(
+  "/ingest",
+  requireAuth(userManager, auth, "queue"),
+  (c) => ingestController.handle(c.req.raw),
+);
+app.get(
+  "/users",
+  requireAuth(userManager, auth, "auth"),
+  (c) => usersController.list(c.req.raw),
+);
+app.post(
+  "/users",
+  requireAuthOrBootstrap(userManager, auth, "auth"),
+  (c) => usersController.create(c.req.raw),
+);
+app.put(
+  "/users/:username",
+  requireAuth(userManager, auth, "auth"),
+  (c) => usersController.update(c.req.raw, c.req.param("username")),
+);
+app.delete(
+  "/users/:username",
+  requireAuth(userManager, auth, "auth"),
+  (c) => usersController.delete(c.req.raw, c.req.param("username")),
+);
 app.get("/", (c) => c.html(SWAGGER_HTML));
 app.get("/docs", (c) => c.html(SWAGGER_HTML));
 app.get("/ui/", (c) => c.redirect("/ui"));

@@ -152,19 +152,24 @@ export class DeployCoordinator {
     // 11. Create logs directory
     await this.deps.sshExec(conn, `mkdir -p ${arachneDir}/logs`);
 
-    // 11. Write launchd plist (user-level LaunchAgent, no sudo)
+    // 11. Write launchd plist (only if it doesn't exist yet)
     const plist = backendPlist(denoPath, homeDir);
     const launchAgentsDir = `${homeDir}/Library/LaunchAgents`;
     const plistPath = `${launchAgentsDir}/com.arachne.backend.plist`;
-    const writeBackend = await this.deps.sshExec(
-      conn,
-      `mkdir -p ${launchAgentsDir} && cat > ${plistPath} << 'PLISTEOF'\n${plist}\nPLISTEOF`,
-    );
-    if (!writeBackend.ok) {
-      throw new CliError(`Error: Failed to write backend plist.\n  ${writeBackend.stderr}`, EXIT.GENERAL);
+    const plistExists = await this.deps.sshExec(conn, `test -f ${plistPath} && echo yes || echo no`);
+    if (plistExists.stdout.trim() !== "yes") {
+      const writeBackend = await this.deps.sshExec(
+        conn,
+        `mkdir -p ${launchAgentsDir} && cat > ${plistPath} << 'PLISTEOF'\n${plist}\nPLISTEOF`,
+      );
+      if (!writeBackend.ok) {
+        throw new CliError(`Error: Failed to write backend plist.\n  ${writeBackend.stderr}`, EXIT.GENERAL);
+      }
+      await this.deps.sshExec(conn, `chmod 644 ${plistPath}`);
     }
 
-    // 12. Reload service (unload first in case it's already running)
+    // 12. Reload service — kill any running process, unload, then load
+    await this.deps.sshExec(conn, `pkill -f "arachne/backend/main.ts" 2>/dev/null || true`);
     await this.deps.sshExec(conn, `launchctl unload ${plistPath} 2>/dev/null || true`);
     const loadService = await this.deps.sshExec(
       conn,

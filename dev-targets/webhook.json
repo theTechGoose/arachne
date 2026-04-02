@@ -1,0 +1,10 @@
+{
+  "host": "https://webhook.site",
+  "route": ["a09aa39d-b4cb-4bf0-b580-11ee4f85895e"],
+  "method": "POST",
+  "headers": {},
+  "query": {},
+  "concurrency": 5,
+  "timeoutMs": 10000,
+  "retries": 3
+}

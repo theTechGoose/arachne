@@ -1,0 +1,10 @@
+{
+  "host": "https://httpbin.org",
+  "route": ["get"],
+  "method": "GET",
+  "headers": {},
+  "query": {},
+  "concurrency": 2,
+  "timeoutMs": 5000,
+  "retries": 3
+}

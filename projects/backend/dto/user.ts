@@ -1,4 +1,4 @@
-export type Permission = "auth" | "queue";
+export type Permission = "auth" | "queue" | "sftp";
 export type UserStatus = "active" | "inactive";
 
 export type User = {

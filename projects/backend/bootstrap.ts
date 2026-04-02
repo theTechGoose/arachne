@@ -17,6 +17,8 @@ import { HealthController } from "@entrypoints/health-controller.ts";
 import { IngestController } from "@entrypoints/ingest-controller.ts";
 import { StepsController } from "@entrypoints/steps-controller.ts";
 import { UsersController } from "@entrypoints/users-controller.ts";
+import { SftpServer } from "@entrypoints/sftp-server.ts";
+import { SftpWatcher } from "@entrypoints/sftp-watcher.ts";
 import { requireAuth, requireAuthOrBootstrap } from "@entrypoints/auth-middleware.ts";
 import { createBullBoard } from "#bull-board/api";
 import { BullMQAdapter } from "#bull-board/bullmq";
@@ -182,7 +184,7 @@ SwaggerUIBundle({
           summary: "List all users",
           security: [{ basicAuth: [] }],
           responses: {
-            "200": { description: "OK", content: { "application/json": { schema: { type: "array", items: { type: "object", properties: { username: { type: "string" }, permissions: { type: "array", items: { type: "string", enum: ["auth", "queue"] } }, status: { type: "string", enum: ["active", "inactive"] } } } } } } },
+            "200": { description: "OK", content: { "application/json": { schema: { type: "array", items: { type: "object", properties: { username: { type: "string" }, permissions: { type: "array", items: { type: "string", enum: ["auth", "queue", "sftp"] } }, status: { type: "string", enum: ["active", "inactive"] } } } } } } },
             "401": { description: "Unauthorized" },
             "403": { description: "Missing auth permission" }
           }
@@ -200,7 +202,7 @@ SwaggerUIBundle({
                   properties: {
                     username: { type: "string" },
                     password: { type: "string" },
-                    permissions: { type: "array", items: { type: "string", enum: ["auth", "queue"] } }
+                    permissions: { type: "array", items: { type: "string", enum: ["auth", "queue", "sftp"] } }
                   }
                 },
                 example: { username: "bootstrap", password: "dookster", permissions: ["auth"] }
@@ -229,7 +231,7 @@ SwaggerUIBundle({
                   type: "object",
                   properties: {
                     password: { type: "string" },
-                    permissions: { type: "array", items: { type: "string", enum: ["auth", "queue"] } },
+                    permissions: { type: "array", items: { type: "string", enum: ["auth", "queue", "sftp"] } },
                     status: { type: "string", enum: ["active", "inactive"] }
                   }
                 }
@@ -306,6 +308,12 @@ app.route("/ui", serverAdapter.registerPlugin());
 
 const server = Deno.serve({ port: PORT }, app.fetch);
 console.log(`Arachne backend listening on port ${PORT}`);
+
+const sftpServer = new SftpServer({ userManager, auth });
+await sftpServer.start();
+
+const sftpWatcher = new SftpWatcher();
+sftpWatcher.start();
 
 // --- 8. Graceful shutdown ---
 Deno.addSignalListener("SIGTERM", async () => {

@@ -162,6 +162,24 @@ Deno.test("install-host creates app directories", async () => {
   assertEquals(execCalls.some((c) => c.includes("sudo chown -R $(whoami) /usr/local/var/arachne")), true);
 });
 
+Deno.test("install-host writes ngrok LaunchDaemon plist", async () => {
+  const { deps, writtenFiles, execCalls } = makeMockDeps();
+  const coordinator = new InstallHostCoordinator(deps);
+  await coordinator.run();
+
+  assertEquals(writtenFiles.has("/tmp/com.ngrok.tunnel.plist"), true);
+  const plist = writtenFiles.get("/tmp/com.ngrok.tunnel.plist")!;
+  assertEquals(plist.includes("com.ngrok.tunnel"), true);
+  assertEquals(plist.includes("/opt/homebrew/bin/ngrok"), true);
+  assertEquals(plist.includes("/usr/local/var/arachne/logs/ngrok.log"), true);
+  assertEquals(
+    execCalls.includes(
+      "sudo cp /tmp/com.ngrok.tunnel.plist /Library/LaunchDaemons/com.ngrok.tunnel.plist",
+    ),
+    true,
+  );
+});
+
 Deno.test("install-host restarts ngrok and redis services", async () => {
   const { deps, execCalls } = makeMockDeps();
   const coordinator = new InstallHostCoordinator(deps);

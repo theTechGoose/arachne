@@ -1,0 +1,10 @@
+{
+  "host": "http://localhost:9999",
+  "route": ["test"],
+  "method": "POST",
+  "headers": {},
+  "query": {},
+  "concurrency": 1,
+  "timeoutMs": 2000,
+  "retries": 2
+}

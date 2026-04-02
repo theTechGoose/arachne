@@ -40,7 +40,7 @@ export class UsersController {
       return this.#error("username, password, and permissions are required", 400);
     }
 
-    const validPermissions = ["auth", "queue"];
+    const validPermissions = ["auth", "queue", "sftp"];
     const invalidPerms = parsed.permissions.filter(
       (p) => !validPermissions.includes(p),
     );
@@ -84,7 +84,7 @@ export class UsersController {
       if (!Array.isArray(parsed.permissions)) {
         return this.#error("permissions must be an array", 400);
       }
-      const validPermissions = ["auth", "queue"];
+      const validPermissions = ["auth", "queue", "sftp"];
       const invalidPerms = parsed.permissions.filter(
         (p) => !validPermissions.includes(p),
       );

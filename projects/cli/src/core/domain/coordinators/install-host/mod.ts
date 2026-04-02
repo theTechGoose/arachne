@@ -63,6 +63,37 @@ export class InstallHostCoordinator {
     await this.deps.exec("sudo chown -R $(whoami) /usr/local/var/arachne");
     this.deps.log("  app dirs      created");
 
+    // Write ngrok LaunchDaemon plist
+    const ngrokPlist = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.ngrok.tunnel</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/ngrok</string>
+    <string>start</string>
+    <string>--all</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/usr/local/var/arachne/logs/ngrok.log</string>
+  <key>StandardErrorPath</key>
+  <string>/usr/local/var/arachne/logs/ngrok.err</string>
+</dict>
+</plist>`;
+    await this.deps.writeFile("/tmp/com.ngrok.tunnel.plist", ngrokPlist);
+    await this.deps.exec(
+      "sudo cp /tmp/com.ngrok.tunnel.plist /Library/LaunchDaemons/com.ngrok.tunnel.plist",
+    );
+    await this.deps.exec("sudo chmod 644 /Library/LaunchDaemons/com.ngrok.tunnel.plist");
+    this.deps.log("  ngrok         LaunchDaemon written");
+
     // Phase 6: Restart ngrok + redis
     await this.deps.exec(
       "sudo launchctl unload /Library/LaunchDaemons/com.ngrok.tunnel.plist 2>/dev/null || true",

@@ -20,6 +20,8 @@
     "#bull-board/bullmq": "npm:@bull-board/api/bullMQAdapter",
     "#bull-board/hono": "npm:@bull-board/hono",
     "#hono": "npm:hono",
-    "#hono/deno": "npm:hono/deno"
+    "#hono/deno": "npm:hono/deno",
+    "#ssh2": "npm:ssh2@1.16.0",
+    "#aws-sdk/s3": "npm:@aws-sdk/client-s3@3.804.0"
   }
 }

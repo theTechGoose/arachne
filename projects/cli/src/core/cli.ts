@@ -224,45 +224,64 @@ const statusCmd = new Command()
     }
   }));
 
-// --- ui ---
+// --- tunnel ---
 
-const uiCmd = new Command()
-  .description("Open Bull Board UI in browser via SSH tunnel")
-  .option("--port <port:number>", "Override local port (default 3001)")
+const tunnelCmd = new Command()
+  .description("Open SSH tunnels to Bull Board and SFTPGo web client")
+  .option("--board-port <port:number>", "Local port for Bull Board (default 3001)")
+  .option("--sftp-port <port:number>", "Local port for SFTPGo web client (default 8080)")
   .option("--no-open", "Skip automatic browser launch")
   // deno-lint-ignore no-explicit-any
   .action(handleErrors(async (_opts: any) => {
-    const conn = await transport.resolve(TARGET);
-    const localPort = _opts.port ?? 3001;
-    // Check if local port is available
-    try {
-      const listener = Deno.listen({ port: localPort });
-      listener.close();
-    } catch {
-      die(`Error: Port ${localPort} is already in use. Use --port <N> to override.`, EXIT.GENERAL);
+    const conn = await transport.resolve(TARGET).catch(async (e) => {
+      if (!(e instanceof CliError) || !e.message.includes("SSH connection failed")) throw e;
+      // Key not authorized — copy it to the remote, then retry
+      console.log("Key not authorized. Setting up passwordless login...\n");
+      await ssh.setupKey(
+        await (async () => {
+          const c = await configStore.loadConnectivity(TARGET);
+          const s = c.tcp.replace(/^tcp:\/\//, "");
+          const i = s.lastIndexOf(":");
+          return { host: s.slice(0, i), port: s.slice(i + 1) };
+        })(),
+      );
+      return transport.resolve(TARGET);
+    });
+
+    const boardPort = _opts.boardPort ?? 3001;
+    const sftpPort = _opts.sftpPort ?? 8080;
+    for (const [name, port] of [["Bull Board", boardPort], ["SFTPGo", sftpPort]] as const) {
+      try {
+        const listener = Deno.listen({ port: port as number });
+        listener.close();
+      } catch {
+        die(`Error: Port ${port} (${name}) is already in use.`, EXIT.GENERAL);
+      }
     }
-    console.log(`Forwarding remote:3001 -> localhost:${localPort}`);
-    // SSH port forward
+    console.log("Starting SSH tunnels...");
+    console.log(`  Bull Board:  http://localhost:${boardPort}/ui`);
+    console.log(`  SFTPGo:      http://localhost:${sftpPort}`);
+    console.log("  Press Ctrl-C to stop the tunnels.\n");
     const sshProc = new Deno.Command("ssh", {
       args: [...sshHelpers.sshArgs(conn, ssh.getConfig(), { batch: true }),
-        "-N", "-L", `${localPort}:localhost:3000`],
+        "-N",
+        "-L", `${boardPort}:localhost:3000`,
+        "-L", `${sftpPort}:localhost:8080`],
       stdin: "inherit", stdout: "inherit", stderr: "inherit",
     });
     const child = sshProc.spawn();
-    // Open browser (unless --no-open)
     if (_opts.open !== false) {
       setTimeout(async () => {
-        await new Deno.Command("open", { args: [`http://localhost:${localPort}`] }).spawn().status;
+        await new Deno.Command("open", { args: [`http://localhost:${boardPort}/ui`] }).spawn().status;
+        await new Deno.Command("open", { args: [`http://localhost:${sftpPort}`] }).spawn().status;
       }, 1000);
     }
-    console.log(`  Bull Board: http://localhost:${localPort}`);
-    console.log("  Press Ctrl-C to stop the tunnel.");
     await child.status;
   }));
 
 // --- unknown subcommand handler ---
 
-const KNOWN_COMMANDS = ["install", "deploy", "status", "ui"];
+const KNOWN_COMMANDS = ["install", "deploy", "status", "tunnel"];
 const subcommand = Deno.args[1];
 if (subcommand && !subcommand.startsWith("-") && !KNOWN_COMMANDS.includes(subcommand)) {
   const suggestion = thresholdChecker.suggestCommand(subcommand, KNOWN_COMMANDS);
@@ -302,5 +321,5 @@ await new Command()
   .command("install", installCmd)
   .command("deploy", deployCmd)
   .command("status", statusCmd)
-  .command("ui", uiCmd)
+  .command("tunnel", tunnelCmd)
   .parse(Deno.args.slice(1));

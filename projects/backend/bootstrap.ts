@@ -1,5 +1,6 @@
 import { RedisConnection } from "@domain/data/redis-connection/mod.ts";
 import { TargetLoader } from "@domain/data/target-loader/mod.ts";
+import { TargetStore } from "@domain/data/target-store/mod.ts";
 import { FlowProducerAdapter } from "@domain/data/flow-producer/mod.ts";
 import { WorkerManager } from "@domain/data/worker-manager/mod.ts";
 import { UserStore } from "@domain/data/user-store/mod.ts";
@@ -13,10 +14,12 @@ import { WorkerProcessor } from "@domain/coordinators/worker-processor/mod.ts";
 import { IngestCoordinator } from "@domain/coordinators/ingest/mod.ts";
 import { HealthCheck } from "@domain/coordinators/health-check/mod.ts";
 import { UserManager } from "@domain/coordinators/user-manager/mod.ts";
+import { TargetManager } from "@domain/coordinators/target-manager/mod.ts";
 import { HealthController } from "@entrypoints/health-controller.ts";
 import { IngestController } from "@entrypoints/ingest-controller.ts";
 import { StepsController } from "@entrypoints/steps-controller.ts";
 import { UsersController } from "@entrypoints/users-controller.ts";
+import { TargetsController } from "@entrypoints/targets-controller.ts";
 import { SftpServer } from "@entrypoints/sftp-server.ts";
 import { SftpWatcher } from "@entrypoints/sftp-watcher.ts";
 import { requireAuth, requireAuthOrBootstrap } from "@entrypoints/auth-middleware.ts";
@@ -33,12 +36,28 @@ const PORT = Number(Deno.env.get("BACKEND_PORT") ?? "3000");
 
 // --- 1. Data layer ---
 const redisConnection = new RedisConnection();
-const targetLoader = new TargetLoader({ targetsDir: TARGETS_DIR });
+const targetStore = new TargetStore(redisConnection);
 const userStore = new UserStore(redisConnection);
 
-// --- 2. Startup: load targets, connect & verify Redis ---
+// Hybrid loader: use Redis if populated, otherwise seed from files
+const hybridLoader = {
+  async load() {
+    const count = await targetStore.count();
+    if (count > 0) {
+      return targetStore.load();
+    }
+    const fileTargets = await new TargetLoader({ targetsDir: TARGETS_DIR }).load();
+    for (const [name, target] of fileTargets) {
+      await targetStore.create(name, target);
+    }
+    console.log(`Seeded ${fileTargets.size} target(s) from files into Redis`);
+    return fileTargets;
+  },
+};
+
+// --- 2. Startup: connect & verify Redis, then load targets ---
 const startup = new StartupCoordinator({
-  targetLoader,
+  targetLoader: hybridLoader,
   redisConnection,
   onReady: (targets) => {
     console.log(`Loaded ${targets.size} target(s)`);
@@ -68,6 +87,7 @@ const flowBuilder = new FlowBuilder({
 
 // --- 4. Coordinators ---
 const userManager = new UserManager({ auth, userStore });
+const targetManager = new TargetManager({ targetStore });
 const workerProcessor = new WorkerProcessor({
   mergeRules,
   responseClassifier,
@@ -110,6 +130,10 @@ const ingestController = new IngestController({
 });
 const stepsController = new StepsController({ targets });
 const usersController = new UsersController({ userManager });
+const targetsController = new TargetsController({
+  targetManager,
+  onMutate: () => setTimeout(() => Deno.exit(0), 200),
+});
 
 // --- 7. HTTP server ---
 const SWAGGER_HTML = `<!DOCTYPE html>
@@ -218,6 +242,91 @@ SwaggerUIBundle({
           }
         }
       },
+      "/targets": {
+        get: {
+          summary: "List all targets",
+          security: [{ basicAuth: [] }],
+          responses: {
+            "200": { description: "OK", content: { "application/json": { schema: { type: "array", items: { type: "object", properties: { name: { type: "string" }, host: { type: "string" }, route: { type: "array", items: { type: "string" } }, method: { type: "string", enum: ["GET","POST","PUT","PATCH","DELETE"] }, headers: { type: "object" }, query: { type: "object" }, concurrency: { type: "number" }, timeoutMs: { type: "number" }, retries: { type: "number" } } } } } } },
+            "401": { description: "Unauthorized" },
+            "403": { description: "Missing auth permission" }
+          }
+        }
+      },
+      "/targets/{name}": {
+        get: {
+          summary: "Get a target",
+          security: [{ basicAuth: [] }],
+          parameters: [{ name: "name", in: "path", required: true, schema: { type: "string" } }],
+          responses: {
+            "200": { description: "OK" },
+            "401": { description: "Unauthorized" },
+            "403": { description: "Missing auth permission" },
+            "404": { description: "Target not found" }
+          }
+        },
+        post: {
+          summary: "Create a target",
+          security: [{ basicAuth: [] }],
+          parameters: [{ name: "name", in: "path", required: true, schema: { type: "string" } }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["host", "route", "method", "headers", "query", "concurrency", "timeoutMs", "retries"],
+                  properties: {
+                    host: { type: "string", format: "uri" },
+                    route: { type: "array", items: { type: "string" } },
+                    method: { type: "string", enum: ["GET","POST","PUT","PATCH","DELETE"] },
+                    headers: { type: "object" },
+                    query: { type: "object" },
+                    concurrency: { type: "number" },
+                    timeoutMs: { type: "number" },
+                    retries: { type: "number" }
+                  }
+                },
+                example: { host: "https://api.example.com", route: ["v1", "jobs"], method: "POST", headers: {}, query: {}, concurrency: 2, timeoutMs: 5000, retries: 3 }
+              }
+            }
+          },
+          responses: {
+            "201": { description: "Target created — server will restart" },
+            "401": { description: "Unauthorized" },
+            "403": { description: "Missing auth permission" },
+            "409": { description: "Target already exists" },
+            "422": { description: "Invalid target" }
+          }
+        },
+        put: {
+          summary: "Update a target",
+          security: [{ basicAuth: [] }],
+          parameters: [{ name: "name", in: "path", required: true, schema: { type: "string" } }],
+          requestBody: {
+            required: true,
+            content: { "application/json": { schema: { type: "object" } } }
+          },
+          responses: {
+            "200": { description: "Target updated — server will restart" },
+            "401": { description: "Unauthorized" },
+            "403": { description: "Missing auth permission" },
+            "404": { description: "Target not found" },
+            "422": { description: "Invalid target" }
+          }
+        },
+        delete: {
+          summary: "Delete a target",
+          security: [{ basicAuth: [] }],
+          parameters: [{ name: "name", in: "path", required: true, schema: { type: "string" } }],
+          responses: {
+            "204": { description: "Target deleted — server will restart" },
+            "401": { description: "Unauthorized" },
+            "403": { description: "Missing auth permission" },
+            "404": { description: "Target not found" }
+          }
+        }
+      },
       "/users/{username}": {
         put: {
           summary: "Update a user",
@@ -300,6 +409,31 @@ app.delete(
   "/users/:username",
   requireAuth(userManager, auth, "auth"),
   (c) => usersController.delete(c.req.raw, c.req.param("username")),
+);
+app.get(
+  "/targets",
+  requireAuth(userManager, auth, "auth"),
+  (c) => targetsController.list(c.req.raw),
+);
+app.get(
+  "/targets/:name",
+  requireAuth(userManager, auth, "auth"),
+  (c) => targetsController.getOne(c.req.raw, c.req.param("name")),
+);
+app.post(
+  "/targets/:name",
+  requireAuth(userManager, auth, "auth"),
+  (c) => targetsController.create(c.req.raw, c.req.param("name")),
+);
+app.put(
+  "/targets/:name",
+  requireAuth(userManager, auth, "auth"),
+  (c) => targetsController.update(c.req.raw, c.req.param("name")),
+);
+app.delete(
+  "/targets/:name",
+  requireAuth(userManager, auth, "auth"),
+  (c) => targetsController.delete(c.req.raw, c.req.param("name")),
 );
 app.get("/", (c) => c.html(SWAGGER_HTML));
 app.get("/docs", (c) => c.html(SWAGGER_HTML));

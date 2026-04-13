@@ -1,0 +1,9 @@
+{
+  "value": "/sftp/provider=genie/type=voicemail/agentId=12345/date=2024-01-15/call.wav",
+  "expected": {
+    "provider": "genie",
+    "type": "voicemail",
+    "agentId": "12345",
+    "date": "2024-01-15"
+  }
+}

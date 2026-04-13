@@ -1,0 +1,7 @@
+{
+  "value":"/sftp/provider=five9/type=recording/whatever.mp3",
+  "expected":{
+    "provider":"five9",
+    "type":"recording"
+  }
+}

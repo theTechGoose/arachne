@@ -67,6 +67,15 @@ export class TargetManager {
     return target;
   }
 
+  async patch(name: string, body: unknown): Promise<Target> {
+    const existing = await this.#targetStore.get(name);
+    if (!existing) throw new TargetNotFoundError(name);
+    const merged = { ...existing, ...(body as object) };
+    const target = this.#validate(merged);
+    await this.#targetStore.update(name, target);
+    return target;
+  }
+
   async delete(name: string): Promise<void> {
     const deleted = await this.#targetStore.delete(name);
     if (!deleted) throw new TargetNotFoundError(name);

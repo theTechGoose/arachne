@@ -50,8 +50,6 @@ export class FlowBuilder {
     for (let i = 0; i < steps.length; i++) {
       const stepName = steps[i];
       const target = targets.get(stepName)!;
-      const jobId = await this.generateId(body, nonce, stepName);
-
       let data: Record<string, unknown>;
       if (i === 0) {
         // Step 0 gets merged payload data
@@ -61,6 +59,12 @@ export class FlowBuilder {
         // Steps 1+ get empty object (workers use getChildrenValues)
         data = {};
       }
+
+      const jobId = await this.generateId(
+        i === 0 ? data : body,
+        nonce,
+        stepName,
+      );
 
       const opts: Record<string, unknown> = {
         jobId,

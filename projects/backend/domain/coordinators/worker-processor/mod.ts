@@ -67,7 +67,9 @@ export class WorkerProcessor {
     }
 
     const queryString = new URLSearchParams(query).toString();
-    const url = target.host + "/" + route.join("/") + (queryString ? "?" + queryString : "");
+    const base = target.host.replace(/\/+$/, "");
+    const path = route.length > 0 ? "/" + route.join("/") : "";
+    const url = base + path + (queryString ? "?" + queryString : "");
 
     const bodyMethods = ["POST", "PUT", "PATCH"];
     const fetchBody = bodyMethods.includes(method) ? JSON.stringify(body) : undefined;

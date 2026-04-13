@@ -430,6 +430,11 @@ app.put(
   requireAuth(userManager, auth, "auth"),
   (c) => targetsController.update(c.req.raw, c.req.param("name")),
 );
+app.patch(
+  "/targets/:name",
+  requireAuth(userManager, auth, "auth"),
+  (c) => targetsController.patch(c.req.raw, c.req.param("name")),
+);
 app.delete(
   "/targets/:name",
   requireAuth(userManager, auth, "auth"),
@@ -444,10 +449,13 @@ const server = Deno.serve({ port: PORT }, app.fetch);
 console.log(`Arachne backend listening on port ${PORT}`);
 
 const sftpServer = new SftpServer({ userManager, auth });
-await sftpServer.start();
-
-const sftpWatcher = new SftpWatcher();
-sftpWatcher.start();
+try {
+  await sftpServer.start();
+  const sftpWatcher = new SftpWatcher();
+  sftpWatcher.start();
+} catch (err) {
+  console.error(`SFTP server failed to start: ${(err as Error).message}`);
+}
 
 // --- 8. Graceful shutdown ---
 Deno.addSignalListener("SIGTERM", async () => {

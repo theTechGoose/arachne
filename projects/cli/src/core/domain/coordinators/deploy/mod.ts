@@ -168,16 +168,16 @@ export class DeployCoordinator {
       await this.deps.sshExec(conn, `chmod 644 ${plistPath}`);
     }
 
-    // 12. Reload service — kill any running process, unload, then load
-    await this.deps.sshExec(conn, `pkill -f "arachne/backend/main.ts" 2>/dev/null || true`);
-    await this.deps.sshExec(conn, `launchctl unload ${plistPath} 2>/dev/null || true`);
-    const loadService = await this.deps.sshExec(
+    // 12. Kill anything running on port 3000, then start fresh
+    await this.deps.sshExec(
       conn,
-      `launchctl load -w ${plistPath}`,
+      `lsof -ti :3000 | xargs kill -9 2>/dev/null; pkill -9 -f "arachne/backend/main.ts" 2>/dev/null; true`,
     );
-    if (!loadService.ok) {
-      throw new CliError(`Error: Failed to load backend service.\n  ${loadService.stderr}`, EXIT.GENERAL);
-    }
+    await new Promise((r) => setTimeout(r, 2000));
+    await this.deps.sshExec(
+      conn,
+      `nohup bash -c 'while true; do TARGETS_DIR=${arachneDir}/targets HOME=${homeDir} ${denoPath} run -A ${arachneDir}/backend/main.ts >> ${arachneDir}/logs/backend.log 2>> ${arachneDir}/logs/backend.err; sleep 1; done' >> ${arachneDir}/logs/backend.log 2>&1 &`,
+    );
 
     // 13. Health check with retries
     await this.healthCheck(conn);
@@ -205,11 +205,8 @@ export class DeployCoordinator {
     this.deps.log(`Waiting ${drainMs / 1000}s for drain...`);
     await new Promise((r) => setTimeout(r, drainMs));
 
-    // Unload service
-    await this.deps.sshExec(
-      conn,
-      "launchctl unload ~/Library/LaunchAgents/com.arachne.backend.plist 2>/dev/null || true",
-    );
+    // Stop service
+    await this.deps.sshExec(conn, `pkill -f "arachne/backend/main.ts" 2>/dev/null || true`);
 
     // Wipe app directories (NEVER Redis data)
     await this.deps.sshExec(

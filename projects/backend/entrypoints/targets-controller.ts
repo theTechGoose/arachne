@@ -84,6 +84,30 @@ export class TargetsController {
     }
   }
 
+  async patch(req: Request, name: string): Promise<Response> {
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return this.#error("Invalid JSON", 400);
+    }
+
+    try {
+      const target = await this.#targetManager.patch(name, body);
+      const response = Response.json(target);
+      this.#onMutate();
+      return response;
+    } catch (err) {
+      if (err instanceof TargetNotFoundError) {
+        return this.#error(err.message, 404);
+      }
+      if (err instanceof TargetValidationError) {
+        return this.#error(err.message, 422);
+      }
+      throw err;
+    }
+  }
+
   async delete(_req: Request, name: string): Promise<Response> {
     try {
       await this.#targetManager.delete(name);

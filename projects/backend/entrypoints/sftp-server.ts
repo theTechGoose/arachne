@@ -89,6 +89,10 @@ export class SftpServer {
       if (key.trim()) return key;
     } catch { /* not found, generate below */ }
 
+    // Remove any empty/partial file so ssh-keygen won't refuse to overwrite
+    try { await Deno.remove(HOST_KEY_PATH); } catch { /* ok */ }
+    try { await Deno.remove(HOST_KEY_PATH + ".pub"); } catch { /* ok */ }
+
     const result = await new Deno.Command("ssh-keygen", {
       args: ["-t", "rsa", "-b", "4096", "-f", HOST_KEY_PATH, "-N", "", "-q"],
       stdin: "null",

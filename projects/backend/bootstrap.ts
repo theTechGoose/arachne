@@ -22,6 +22,7 @@ import { UsersController } from "@entrypoints/users-controller.ts";
 import { TargetsController } from "@entrypoints/targets-controller.ts";
 import { SftpServer } from "@entrypoints/sftp-server.ts";
 import { SftpWatcher } from "@entrypoints/sftp-watcher.ts";
+import { SftpValidateController } from "@entrypoints/sftp-validate-controller.ts";
 import { requireAuth, requireAuthOrBootstrap } from "@entrypoints/auth-middleware.ts";
 import { createBullBoard } from "#bull-board/api";
 import { BullMQAdapter } from "#bull-board/bullmq";
@@ -122,6 +123,7 @@ createBullBoard({
   serverAdapter,
 });
 // --- 6. Entrypoints ---
+const sftpValidateController = new SftpValidateController();
 const healthController = new HealthController({
   check: () => healthCheck.check(),
 });
@@ -383,6 +385,7 @@ SwaggerUIBundle({
 </html>`;
 
 const app = new Hono();
+app.post("/sftp/validate", (c) => sftpValidateController.handle(c.req.raw));
 app.get("/health", (c) => healthController.handle(c.req.raw));
 app.get("/steps", (c) => stepsController.handle(c.req.raw));
 app.post(

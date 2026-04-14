@@ -1,0 +1,4 @@
+{
+  "value": "/sftp/type=recording/provider=five9/recordingId=abc123/whatever.mp3",
+  "expected": true
+}

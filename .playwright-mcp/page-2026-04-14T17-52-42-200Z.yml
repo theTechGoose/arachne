@@ -1,0 +1,89 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - text:  
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "         " [ref=e10] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e11]:
+              - generic [ref=e12]: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+            - text:  
+          - text:                
+        - generic [ref=e13]:
+          - generic [ref=e15] [cursor=pointer]:
+            - generic [ref=e16]: 
+            - generic: 
+          - text:  
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e21]:
+          - img "Logo" [ref=e22]
+          - text: WebClient
+        - generic [ref=e25]:
+          - link "  Files" [ref=e27] [cursor=pointer]:
+            - /url: /web/client/files
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e28]: Files
+          - link "      Shares" [ref=e30] [cursor=pointer]:
+            - /url: /web/client/shares
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e31]: Shares
+          - link "  2FA" [ref=e33] [cursor=pointer]:
+            - /url: /web/client/mfa
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e34]: 2FA
+      - generic [ref=e35]:
+        - generic [ref=e38]:
+          - text:    
+          - generic [ref=e39]:
+            - generic [ref=e40]:
+              - generic [ref=e42]:
+                - generic [ref=e43]: 
+                - textbox "Search" [ref=e44]
+              - generic [ref=e46]:
+                - button "  New Folder" [ref=e47] [cursor=pointer]:
+                  - generic [ref=e48]:
+                    - generic [ref=e49]: 
+                    - generic: 
+                  - generic [ref=e50]: New Folder
+                - button "  Upload Files" [ref=e51] [cursor=pointer]:
+                  - generic [ref=e52]:
+                    - generic [ref=e53]: 
+                    - generic: 
+                  - generic [ref=e54]: Upload Files
+            - generic [ref=e55]:
+              - generic [ref=e56]:
+                - generic [ref=e58]:
+                  - generic [ref=e59]: 
+                  - link "Home" [ref=e60] [cursor=pointer]:
+                    - /url: /web/client/files?path=%2F
+                - text: 
+              - text:      
+              - generic [ref=e61]: Loading...
+        - generic [ref=e65]: SFTPGo 2.7.1 13123486
+  - text:  
+  - generic: 
+  - text:                

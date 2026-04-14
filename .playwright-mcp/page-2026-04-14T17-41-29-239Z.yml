@@ -1,0 +1,167 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - text:  
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "         " [ref=e10] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e11]:
+              - generic [ref=e12]: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+            - text:  
+          - text:                
+        - generic [ref=e13]:
+          - generic [ref=e15] [cursor=pointer]:
+            - generic [ref=e16]: 
+            - generic: 
+          - text:  
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e21]:
+          - img "Logo" [ref=e22]
+          - text: WebAdmin
+        - generic [ref=e25]:
+          - link "     Users" [ref=e27] [cursor=pointer]:
+            - /url: /web/admin/users
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e28]: Users
+          - link "    Groups" [ref=e30] [cursor=pointer]:
+            - /url: /web/admin/groups
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e31]: Groups
+          - link "  Virtual folders" [ref=e33] [cursor=pointer]:
+            - /url: /web/admin/folders
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e34]: Virtual folders
+          - link "  Active connections" [ref=e36] [cursor=pointer]:
+            - /url: /web/admin/connections
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e37]: Active connections
+          - generic [ref=e39] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e40]: Event Manager
+          - generic [ref=e43] [cursor=pointer]:
+            - generic:
+              - generic: 
+            - generic [ref=e44]: IP Manager
+          - generic [ref=e46]:
+            - generic [ref=e47] [cursor=pointer]:
+              - generic:
+                - generic:
+                  - generic: 
+                  - generic: 
+                  - generic: 
+                  - generic: 
+                  - generic: 
+              - generic [ref=e48]: Server Manager
+            - generic [ref=e50]:
+              - link "Configurations" [ref=e52] [cursor=pointer]:
+                - /url: /web/admin/configs
+                - generic [ref=e55]: Configurations
+              - link "Maintenance" [ref=e57] [cursor=pointer]:
+                - /url: /web/admin/maintenance
+                - generic [ref=e60]: Maintenance
+              - link "Status" [ref=e62] [cursor=pointer]:
+                - /url: /web/admin/status
+                - generic [ref=e65]: Status
+          - link " Admins" [ref=e67] [cursor=pointer]:
+            - /url: /web/admin/managers
+            - generic:
+              - generic: 
+            - generic [ref=e68]: Admins
+          - link "   Roles" [ref=e70] [cursor=pointer]:
+            - /url: /web/admin/roles
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e71]: Roles
+      - generic [ref=e72]:
+        - generic [ref=e76]:
+          - heading "Server status" [level=3] [ref=e78]
+          - generic [ref=e79]:
+            - generic [ref=e80]:
+              - heading "SSH/SFTP server" [level=3] [ref=e82]
+              - generic [ref=e83]:
+                - paragraph [ref=e84]: "Status: active"
+                - paragraph [ref=e86]: Address ":2022"
+                - generic [ref=e87]:
+                  - paragraph [ref=e88]: Host key "id_rsa"
+                  - paragraph [ref=e89]: Fingerprint "SHA256:O7VCu0inDtucC2BV7auyl0InFOd1Gqh6tH9bLHnjF2Y"
+                  - paragraph [ref=e90]: Algorithms "rsa-sha2-256, rsa-sha2-512"
+                - generic [ref=e91]:
+                  - paragraph [ref=e92]: Host key "id_ecdsa"
+                  - paragraph [ref=e93]: Fingerprint "SHA256:e7602ymDV9r9bMfC4cL0nCBX6AMRm3NVw0oRWeMe8jA"
+                  - paragraph [ref=e94]: Algorithms "ecdsa-sha2-nistp256"
+                - generic [ref=e95]:
+                  - paragraph [ref=e96]: Host key "id_ed25519"
+                  - paragraph [ref=e97]: Fingerprint "SHA256:W2UaPvX1QNv8HIemaVeLPOQ3nNkZaGKOYl61Oif7e4Y"
+                  - paragraph [ref=e98]: Algorithms "ssh-ed25519"
+                - generic [ref=e99]:
+                  - paragraph [ref=e100]: Accepted commands "md5sum, sha1sum, sha256sum, cd, pwd, scp"
+                  - paragraph [ref=e101]: Authentication methods "password, publickey, keyboard-interactive, publickey+password, publickey+keyboard-interactive"
+                  - paragraph [ref=e102]: Public key authentication algorithms "ssh-ed25519, sk-ssh-ed25519@openssh.com, sk-ecdsa-sha2-nistp256@openssh.com, ecdsa-sha2-nistp256, ecdsa-sha2-nistp384, ecdsa-sha2-nistp521, rsa-sha2-256, rsa-sha2-512"
+                  - paragraph [ref=e103]: Message authentication code (MAC) algorithms "hmac-sha2-256-etm@openssh.com, hmac-sha2-256"
+                  - paragraph [ref=e104]: Key exchange (KEX) algorithms "mlkem768x25519-sha256, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group14-sha256, diffie-hellman-group16-sha512, diffie-hellman-group-exchange-sha256"
+                  - paragraph [ref=e105]: Ciphers "aes128-gcm@openssh.com, aes256-gcm@openssh.com, chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr"
+            - generic [ref=e106]:
+              - heading "FTP server" [level=3] [ref=e108]
+              - paragraph [ref=e110]: "Status: disabled"
+            - generic [ref=e111]:
+              - heading "WebDAV server" [level=3] [ref=e113]
+              - paragraph [ref=e115]: "Status: disabled"
+            - generic [ref=e116]:
+              - heading "Database" [level=3] [ref=e118]
+              - generic [ref=e119]:
+                - paragraph [ref=e120]: "Status: active"
+                - paragraph [ref=e122]: Driver "sqlite"
+            - generic [ref=e123]:
+              - heading "Defender" [level=3] [ref=e125]
+              - paragraph [ref=e127]: "Status: disabled"
+            - generic [ref=e128]:
+              - heading "Allow list" [level=3] [ref=e130]
+              - paragraph [ref=e132]: "Status: disabled"
+            - generic [ref=e133]:
+              - heading "Rate limiters" [level=3] [ref=e135]
+              - paragraph [ref=e137]: "Status: disabled"
+            - generic [ref=e138]:
+              - heading "Two-factor authentication" [level=3] [ref=e140]
+              - generic [ref=e141]:
+                - paragraph [ref=e142]: "Status: active"
+                - generic [ref=e143]:
+                  - paragraph [ref=e144]: Configuration "Default"
+                  - paragraph [ref=e145]: Issuer "SFTPGo"
+                  - paragraph [ref=e146]: Algorithm "sha1"
+        - generic [ref=e149]: SFTPGo 2.7.1 13123486
+  - text:  
+  - generic: 

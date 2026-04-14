@@ -1,0 +1,253 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - text:  
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "         " [ref=e10] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e11]:
+              - generic [ref=e12]: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+            - text:  
+          - text:                
+        - generic [ref=e13]:
+          - generic [ref=e15] [cursor=pointer]:
+            - generic [ref=e16]: 
+            - generic: 
+          - text:  
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e21]:
+          - img "Logo" [ref=e22]
+          - text: WebAdmin
+        - generic [ref=e25]:
+          - link "     Users" [ref=e27] [cursor=pointer]:
+            - /url: /web/admin/users
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e28]: Users
+          - link "    Groups" [ref=e30] [cursor=pointer]:
+            - /url: /web/admin/groups
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e31]: Groups
+          - link "  Virtual folders" [ref=e33] [cursor=pointer]:
+            - /url: /web/admin/folders
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e34]: Virtual folders
+          - link "  Active connections" [ref=e36] [cursor=pointer]:
+            - /url: /web/admin/connections
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e37]: Active connections
+          - generic [ref=e39] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e40]: Event Manager
+          - generic [ref=e43] [cursor=pointer]:
+            - generic:
+              - generic: 
+            - generic [ref=e44]: IP Manager
+          - generic [ref=e47] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e48]: Server Manager
+          - link " Admins" [ref=e51] [cursor=pointer]:
+            - /url: /web/admin/managers
+            - generic:
+              - generic: 
+            - generic [ref=e52]: Admins
+          - link "   Roles" [ref=e54] [cursor=pointer]:
+            - /url: /web/admin/roles
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e55]: Roles
+      - generic [ref=e56]:
+        - generic [ref=e60]:
+          - heading "Update user" [level=3] [ref=e62]
+          - generic [ref=e63]:
+            - text:    
+            - generic [ref=e64]:
+              - generic [ref=e65]:
+                - generic [ref=e66]: Username
+                - textbox "Username" [ref=e68]:
+                  - /placeholder: ""
+                  - text: sftpuser
+              - generic [ref=e69]:
+                - generic [ref=e70]: Password
+                - textbox "Password" [ref=e72]: "[**redacted**]"
+              - generic [ref=e73]:
+                - generic [ref=e74]: Require password change
+                - generic [ref=e76]:
+                  - checkbox "Require password change The user will need to change the password from WebClient to activate the account" [ref=e77]
+                  - generic [ref=e78]: The user will need to change the password from WebClient to activate the account
+              - generic [ref=e79]:
+                - heading "Public keys" [level=3] [ref=e81]
+                - generic [ref=e83]:
+                  - generic [ref=e86]: Public keys can be used for SFTP authentication
+                  - generic [ref=e90]:
+                    - textbox "Paste a public key here" [ref=e92]
+                    - link "     Delete" [ref=e94] [cursor=pointer]:
+                      - /url: "#"
+                      - generic [ref=e95]:
+                        - generic [ref=e96]: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                      - text: Delete
+                  - link " Add" [ref=e98] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e99]: 
+                    - text: Add
+              - text:      
+              - generic [ref=e100]:
+                - heading "File system" [level=3] [ref=e102]
+                - generic [ref=e103]:
+                  - generic [ref=e104]:
+                    - generic [ref=e105]: Storage
+                    - generic [ref=e106]:
+                      - combobox [ref=e107]
+                      - combobox "S3 (Compatible)" [ref=e110] [cursor=pointer]:
+                        - textbox "S3 (Compatible)" [ref=e111]
+                  - generic [ref=e112]:
+                    - generic [ref=e113]: Root directory
+                    - textbox "Root directory" [ref=e115]:
+                      - /placeholder: Absolute path to a directory on local disk
+                      - text: /tmp/sftpgo/sftpuser
+                  - generic [ref=e116]:
+                    - generic [ref=e117]: Bucket
+                    - textbox "Bucket" [ref=e119]: dooks-recordings
+                  - generic [ref=e120]:
+                    - generic [ref=e121]: Region
+                    - textbox "Region" [ref=e123]: us-east-1
+                  - generic [ref=e124]:
+                    - generic [ref=e125]: Access Key
+                    - textbox "Access Key" [ref=e127]: AKIA6JFDZJ3TPMDH3UWS
+                  - generic [ref=e128]:
+                    - generic [ref=e129]: Access Secret
+                    - textbox "Access Secret" [ref=e131]: "[**redacted**]"
+                  - generic [ref=e132]:
+                    - generic [ref=e133]: Key Prefix
+                    - generic [ref=e134]:
+                      - textbox "Key Prefix" [ref=e135]
+                      - generic [ref=e136]: "Restrict access to keys with the specified prefix. Example: \"somedir/subdir/\""
+                  - generic [ref=e137]:
+                    - generic [ref=e138]: Endpoint
+                    - generic [ref=e139]:
+                      - textbox "Endpoint" [ref=e140]
+                      - generic [ref=e141]: For AWS S3, leave blank to use the default endpoint for the specified region
+                  - generic [ref=e142]:
+                    - generic [ref=e143]: Role ARN
+                    - generic [ref=e144]:
+                      - textbox "Role ARN" [ref=e145]
+                      - generic [ref=e146]: Optional IAM Role ARN to assume
+                  - generic [ref=e147]:
+                    - generic [ref=e148]: Storage class
+                    - generic [ref=e149]:
+                      - textbox "Storage class" [ref=e150]
+                      - generic [ref=e151]: Leave blank for default
+                    - generic [ref=e153]: ACL
+                    - generic [ref=e154]:
+                      - textbox "ACL" [ref=e155]
+                      - generic [ref=e156]: Leave blank for default
+                  - generic [ref=e157]:
+                    - generic [ref=e158]: Upload Part Size (MB)
+                    - generic [ref=e159]:
+                      - spinbutton "Upload Part Size (MB)" [ref=e160]: "0"
+                      - generic [ref=e161]: 0 means the default (5 MB). Minimum is 5
+                    - generic [ref=e163]: Upload Concurrency
+                    - generic [ref=e164]:
+                      - spinbutton "Upload Concurrency" [ref=e165]: "0"
+                      - generic [ref=e166]: How many parts are uploaded in parallel. 0 means the default (5)
+                  - generic [ref=e167]:
+                    - generic [ref=e168]: Download Part Size (MB)
+                    - generic [ref=e169]:
+                      - spinbutton "Download Part Size (MB)" [ref=e170]: "0"
+                      - generic [ref=e171]: 0 means the default (5 MB). Minimum is 5
+                    - generic [ref=e173]: Download Concurrency
+                    - generic [ref=e174]:
+                      - spinbutton "Download Concurrency" [ref=e175]: "0"
+                      - generic [ref=e176]: How many parts are downloaded in parallel. 0 means the default (5)
+                  - generic [ref=e177]:
+                    - generic [ref=e178]: Upload Part timeout
+                    - generic [ref=e179]:
+                      - spinbutton "Upload Part timeout" [ref=e180]: "0"
+                      - generic [ref=e181]: Max time limit, in seconds, to upload a single part. 0 means no limit
+                    - generic [ref=e183]: Download Part timeout
+                    - generic [ref=e184]:
+                      - spinbutton "Download Part timeout" [ref=e185]: "0"
+                      - generic [ref=e186]: Max time limit, in seconds, to download a single part. 0 means no limit
+                  - generic [ref=e187]:
+                    - generic [ref=e188]: Server-side encryption key
+                    - generic [ref=e189]:
+                      - textbox "Server-side encryption key" [ref=e190]
+                      - generic [ref=e191]: You can store your data encrypted with this key, but if you lose or change this key, you will lose all files encrypted with it. Files that are not encrypted or encrypted with a different key will not be accessible
+                  - generic [ref=e192]:
+                    - generic [ref=e194]:
+                      - checkbox "Use path-style addressing, i.e. \"endpoint/BUCKET/KEY\"" [ref=e195]
+                      - generic [ref=e196]: Use path-style addressing, i.e. "endpoint/BUCKET/KEY"
+                    - generic [ref=e198]:
+                      - checkbox "Skip TLS verify. This should be used only for testing" [ref=e199]
+                      - generic [ref=e200]: Skip TLS verify. This should be used only for testing
+              - generic [ref=e201]:
+                - generic [ref=e202]:
+                  - heading "Profile" [level=2] [ref=e203] [cursor=pointer]:
+                    - button "Profile" [expanded] [ref=e204]:
+                      - generic [ref=e205]: Profile
+                  - text:       
+                - generic [ref=e206]:
+                  - heading "ACLs" [level=2] [ref=e207] [cursor=pointer]:
+                    - button "ACLs" [expanded] [ref=e208]:
+                      - generic [ref=e209]: ACLs
+                  - text:                  
+                - generic [ref=e210]:
+                  - heading "Disk quota and bandwidth limits" [level=2] [ref=e211] [cursor=pointer]:
+                    - button "Disk quota and bandwidth limits" [expanded] [ref=e212]:
+                      - generic [ref=e213]: Disk quota and bandwidth limits
+                  - text:      
+                - heading "Advanced settings" [level=2] [ref=e215] [cursor=pointer]:
+                  - button "Advanced settings" [expanded] [ref=e216]:
+                    - generic [ref=e217]: Advanced settings
+              - generic [ref=e218]:
+                - generic [ref=e219]: Disconnect the user after the update
+                - generic [ref=e221]:
+                  - checkbox "Disconnect the user after the update This way you force the user to login again, if connected, and so to use the new configuration" [ref=e222]
+                  - generic [ref=e223]: This way you force the user to login again, if connected, and so to use the new configuration
+              - button "Save" [ref=e225] [cursor=pointer]
+        - generic [ref=e228]: SFTPGo 2.7.1 13123486
+  - text:  
+  - generic: 

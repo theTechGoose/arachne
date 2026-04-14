@@ -1,0 +1,281 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - text:  
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "         " [ref=e10] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e11]:
+              - generic [ref=e12]: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+            - text:  
+          - text:                
+        - generic [ref=e13]:
+          - generic [ref=e15] [cursor=pointer]:
+            - generic [ref=e16]: 
+            - generic: 
+          - text:  
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e21]:
+          - img "Logo" [ref=e22]
+          - text: WebClient
+        - generic [ref=e25]:
+          - link "  Files" [ref=e27] [cursor=pointer]:
+            - /url: /web/client/files
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e28]: Files
+          - link "      Shares" [ref=e30] [cursor=pointer]:
+            - /url: /web/client/shares
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e31]: Shares
+          - link "  2FA" [ref=e33] [cursor=pointer]:
+            - /url: /web/client/mfa
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e34]: 2FA
+      - generic [ref=e35]:
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - generic [ref=e40]:
+              - generic [ref=e41]: 
+              - generic: 
+              - generic: 
+            - generic [ref=e43]: Unable to access the requested resource
+            - button "" [ref=e44] [cursor=pointer]:
+              - generic [ref=e45]: 
+          - generic [ref=e46]:
+            - generic [ref=e47]:
+              - generic [ref=e49]:
+                - generic [ref=e50]: 
+                - textbox "Search" [ref=e51]
+              - generic [ref=e53]:
+                - button "  New Folder" [ref=e54] [cursor=pointer]:
+                  - generic [ref=e55]:
+                    - generic [ref=e56]: 
+                    - generic: 
+                  - generic [ref=e57]: New Folder
+                - button "  Upload Files" [ref=e58] [cursor=pointer]:
+                  - generic [ref=e59]:
+                    - generic [ref=e60]: 
+                    - generic: 
+                  - generic [ref=e61]: Upload Files
+            - generic [ref=e62]:
+              - generic [ref=e63]:
+                - generic [ref=e65]:
+                  - generic [ref=e66]: 
+                  - link "Home" [ref=e67] [cursor=pointer]:
+                    - /url: /web/client/files?path=%2F
+                - text: 
+              - text:      
+              - generic [ref=e74]:
+                - table [ref=e76]:
+                  - rowgroup [ref=e83]:
+                    - row "Name Size Last Modified" [ref=e84]:
+                      - columnheader [ref=e85]:
+                        - checkbox [ref=e89]
+                      - columnheader "Name" [ref=e90] [cursor=pointer]:
+                        - generic [ref=e92]: Name
+                      - columnheader "Size" [ref=e93] [cursor=pointer]:
+                        - generic [ref=e95]: Size
+                      - columnheader "Last Modified" [ref=e96] [cursor=pointer]:
+                        - generic [ref=e98]: Last Modified
+                      - columnheader [ref=e99]
+                  - rowgroup [ref=e100]:
+                    - row "  credentials    " [ref=e101]:
+                      - cell [ref=e102]:
+                        - checkbox [ref=e104]
+                      - cell "  credentials" [ref=e105]:
+                        - generic [ref=e106]:
+                          - generic [ref=e107]:
+                            - generic [ref=e108]: 
+                            - generic: 
+                          - link "credentials" [ref=e109] [cursor=pointer]:
+                            - /url: /web/client/files?path=%2Fcredentials&_=1776189183
+                      - cell [ref=e110]
+                      - cell [ref=e111]
+                      - cell "   " [ref=e112]:
+                        - button "   " [ref=e115] [cursor=pointer]:
+                          - generic [ref=e116]:
+                            - generic [ref=e117]: 
+                            - generic: 
+                            - generic: 
+                            - generic: 
+                    - row "  recordings    " [ref=e118]:
+                      - cell [ref=e119]:
+                        - checkbox [ref=e121]
+                      - cell "  recordings" [ref=e122]:
+                        - generic [ref=e123]:
+                          - generic [ref=e124]:
+                            - generic [ref=e125]: 
+                            - generic: 
+                          - link "recordings" [ref=e126] [cursor=pointer]:
+                            - /url: /web/client/files?path=%2Frecordings&_=1776189183
+                      - cell [ref=e127]
+                      - cell [ref=e128]
+                      - cell "   " [ref=e129]:
+                        - button "   " [ref=e132] [cursor=pointer]:
+                          - generic [ref=e133]:
+                            - generic [ref=e134]: 
+                            - generic: 
+                            - generic: 
+                            - generic: 
+                    - row "  sounds    " [ref=e135]:
+                      - cell [ref=e136]:
+                        - checkbox [ref=e138]
+                      - cell "  sounds" [ref=e139]:
+                        - generic [ref=e140]:
+                          - generic [ref=e141]:
+                            - generic [ref=e142]: 
+                            - generic: 
+                          - link "sounds" [ref=e143] [cursor=pointer]:
+                            - /url: /web/client/files?path=%2Fsounds&_=1776189183
+                      - cell [ref=e144]
+                      - cell [ref=e145]
+                      - cell "   " [ref=e146]:
+                        - button "   " [ref=e149] [cursor=pointer]:
+                          - generic [ref=e150]:
+                            - generic [ref=e151]: 
+                            - generic: 
+                            - generic: 
+                            - generic: 
+                    - row "  test-recordings    " [ref=e152]:
+                      - cell [ref=e153]:
+                        - checkbox [ref=e155]
+                      - cell "  test-recordings" [ref=e156]:
+                        - generic [ref=e157]:
+                          - generic [ref=e158]:
+                            - generic [ref=e159]: 
+                            - generic: 
+                          - link "test-recordings" [ref=e160] [cursor=pointer]:
+                            - /url: /web/client/files?path=%2Ftest-recordings&_=1776189183
+                      - cell [ref=e161]
+                      - cell [ref=e162]
+                      - cell "   " [ref=e163]:
+                        - button "   " [ref=e166] [cursor=pointer]:
+                          - generic [ref=e167]:
+                            - generic [ref=e168]: 
+                            - generic: 
+                            - generic: 
+                            - generic: 
+                    - row "  alex-open-me.txt 19 Bytes 4/2/2026, 2:00 PM       " [ref=e169]:
+                      - cell [ref=e170]:
+                        - checkbox [ref=e172]
+                      - cell "  alex-open-me.txt" [ref=e173]:
+                        - generic [ref=e174]:
+                          - generic [ref=e175]:
+                            - generic [ref=e176]: 
+                            - generic: 
+                          - link "alex-open-me.txt" [ref=e177] [cursor=pointer]:
+                            - /url: /web/client/files?path=%2Falex-open-me.txt&_=1776189183
+                      - cell "19 Bytes" [ref=e178]
+                      - cell "4/2/2026, 2:00 PM" [ref=e179]
+                      - cell "      " [ref=e180]:
+                        - generic [ref=e181]:
+                          - link "  " [ref=e183] [cursor=pointer]:
+                            - /url: /web/client/editfile?path=%2Falex-open-me.txt&_=1776189183
+                            - generic [ref=e184]:
+                              - generic [ref=e185]: 
+                              - generic: 
+                              - generic: 
+                          - button "   " [ref=e187] [cursor=pointer]:
+                            - generic [ref=e188]:
+                              - generic [ref=e189]: 
+                              - generic: 
+                              - generic: 
+                              - generic: 
+                    - row "  webhook-test.txt 24 Bytes 4/2/2026, 2:04 PM       " [ref=e190]:
+                      - cell [ref=e191]:
+                        - checkbox [ref=e193]
+                      - cell "  webhook-test.txt" [ref=e194]:
+                        - generic [ref=e195]:
+                          - generic [ref=e196]:
+                            - generic [ref=e197]: 
+                            - generic: 
+                          - link "webhook-test.txt" [ref=e198] [cursor=pointer]:
+                            - /url: /web/client/files?path=%2Fwebhook-test.txt&_=1776189183
+                      - cell "24 Bytes" [ref=e199]
+                      - cell "4/2/2026, 2:04 PM" [ref=e200]
+                      - cell "      " [ref=e201]:
+                        - generic [ref=e202]:
+                          - link "  " [ref=e204] [cursor=pointer]:
+                            - /url: /web/client/editfile?path=%2Fwebhook-test.txt&_=1776189183
+                            - generic [ref=e205]:
+                              - generic [ref=e206]: 
+                              - generic: 
+                              - generic: 
+                          - button "   " [ref=e208] [cursor=pointer]:
+                            - generic [ref=e209]:
+                              - generic [ref=e210]: 
+                              - generic: 
+                              - generic: 
+                              - generic: 
+                    - row "  webhook-test2.txt 14 Bytes 4/2/2026, 2:04 PM       " [ref=e211]:
+                      - cell [ref=e212]:
+                        - checkbox [ref=e214]
+                      - cell "  webhook-test2.txt" [ref=e215]:
+                        - generic [ref=e216]:
+                          - generic [ref=e217]:
+                            - generic [ref=e218]: 
+                            - generic: 
+                          - link "webhook-test2.txt" [ref=e219] [cursor=pointer]:
+                            - /url: /web/client/files?path=%2Fwebhook-test2.txt&_=1776189183
+                      - cell "14 Bytes" [ref=e220]
+                      - cell "4/2/2026, 2:04 PM" [ref=e221]
+                      - cell "      " [ref=e222]:
+                        - generic [ref=e223]:
+                          - link "  " [ref=e225] [cursor=pointer]:
+                            - /url: /web/client/editfile?path=%2Fwebhook-test2.txt&_=1776189183
+                            - generic [ref=e226]:
+                              - generic [ref=e227]: 
+                              - generic: 
+                              - generic: 
+                          - button "   " [ref=e229] [cursor=pointer]:
+                            - generic [ref=e230]:
+                              - generic [ref=e231]: 
+                              - generic: 
+                              - generic: 
+                              - generic: 
+                - generic [ref=e232]:
+                  - generic [ref=e233]:
+                    - combobox [ref=e235]:
+                      - option "10" [selected]
+                      - option "25"
+                      - option "50"
+                      - option "100"
+                      - option "250"
+                      - option "500"
+                    - status [ref=e236]: Showing 1 to 7 of 7 records
+                  - navigation "pagination" [ref=e239]:
+                    - list [ref=e240]:
+                      - listitem [ref=e241]:
+                        - link "Previous" [disabled]
+                      - listitem [ref=e242]:
+                        - link "1" [ref=e243] [cursor=pointer]
+                      - listitem [ref=e244]:
+                        - link "Next" [disabled]
+        - generic [ref=e72]: SFTPGo 2.7.1 13123486
+  - text:  
+  - generic: 
+  - text:                

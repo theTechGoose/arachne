@@ -1,0 +1,20 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - generic [ref=e8]:
+      - img "Logo" [ref=e10]
+      - heading "WebAdmin" [level=1] [ref=e12]
+    - text:    
+    - textbox "Username" [ref=e14]: raphaelcastro
+    - generic [ref=e16]:
+      - textbox "Password" [ref=e17]: monster
+      - generic [ref=e18] [cursor=pointer]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: 
+          - generic: 
+          - generic: 
+          - generic: 
+        - text:   
+    - button "Sign in" [ref=e22] [cursor=pointer]
+  - separator [ref=e23]
+  - link "Go to WebClient" [ref=e26] [cursor=pointer]:
+    - /url: /web/client/login

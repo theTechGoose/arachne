@@ -7,7 +7,7 @@
 
 2. `Deno.watchFs` detects the new file.
 
-3. Path is parsed — segments split by `/`, each directory segment after the
+3. Path is parsed — segments split by `/`, each directory segment after the 
    root must be `key=value`. The first segment (username) becomes a metadata
    field. Filename minus extension becomes `name`.
 

@@ -1,0 +1,4 @@
+[     752ms] [INFO] 🌐 i18next is maintained with support from locize.com — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙 @ http://localhost:8080/static/vendor/i18next/i18next.min.js:0
+[   13921ms] [INFO] 🌐 i18next is maintained with support from locize.com — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙 @ http://localhost:8080/static/vendor/i18next/i18next.min.js:0
+[   13928ms] [VERBOSE] [DOM] Multiple forms should be contained in their own form elements; break up complex forms into ones that represent a single action: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:8080/web/admin/user/sftpuser:0
+[   27539ms] [INFO] 🌐 i18next is maintained with support from locize.com — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙 @ http://localhost:8080/static/vendor/i18next/i18next.min.js:0

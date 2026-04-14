@@ -1,0 +1,133 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - text:  
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "         " [ref=e10] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e11]:
+              - generic [ref=e12]: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+            - text:  
+          - text:                
+        - generic [ref=e13]:
+          - generic [ref=e15] [cursor=pointer]:
+            - generic [ref=e16]: 
+            - generic: 
+          - generic [ref=e17]:
+            - generic [ref=e19]:
+              - generic [ref=e21]:
+                - generic [ref=e22]: 
+                - generic: 
+              - generic [ref=e25]: raphaelcastro
+            - link "Profile" [ref=e28] [cursor=pointer]:
+              - /url: /web/admin/profile
+              - generic [ref=e29]: Profile
+            - link "Change password" [ref=e31] [cursor=pointer]:
+              - /url: /web/admin/changepwd
+              - generic [ref=e32]: Change password
+            - link "Two-factor authentication" [ref=e34] [cursor=pointer]:
+              - /url: /web/admin/mfa
+              - generic [ref=e35]: Two-factor authentication
+            - link "Sign out" [ref=e37] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e38]: Sign out
+    - generic [ref=e39]:
+      - generic [ref=e40]:
+        - generic [ref=e43]:
+          - img "Logo" [ref=e44]
+          - text: WebAdmin
+        - generic [ref=e47]:
+          - link "     Users" [ref=e49] [cursor=pointer]:
+            - /url: /web/admin/users
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e50]: Users
+          - link "    Groups" [ref=e52] [cursor=pointer]:
+            - /url: /web/admin/groups
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e53]: Groups
+          - link "  Virtual folders" [ref=e55] [cursor=pointer]:
+            - /url: /web/admin/folders
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e56]: Virtual folders
+          - link "  Active connections" [ref=e58] [cursor=pointer]:
+            - /url: /web/admin/connections
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e59]: Active connections
+          - generic [ref=e60]:
+            - generic [ref=e61] [cursor=pointer]:
+              - generic:
+                - generic:
+                  - generic: 
+                  - generic: 
+              - generic [ref=e62]: Event Manager
+            - generic [ref=e64]:
+              - link "Rules" [ref=e66] [cursor=pointer]:
+                - /url: /web/admin/eventrules
+                - generic [ref=e69]: Rules
+              - link "Actions" [ref=e71] [cursor=pointer]:
+                - /url: /web/admin/eventactions
+                - generic [ref=e74]: Actions
+          - generic [ref=e76] [cursor=pointer]:
+            - generic:
+              - generic: 
+            - generic [ref=e77]: IP Manager
+          - generic [ref=e80] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e81]: Server Manager
+          - link " Admins" [ref=e84] [cursor=pointer]:
+            - /url: /web/admin/managers
+            - generic:
+              - generic: 
+            - generic [ref=e85]: Admins
+          - link "   Roles" [ref=e87] [cursor=pointer]:
+            - /url: /web/admin/roles
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e88]: Roles
+      - generic [ref=e89]:
+        - generic [ref=e92]:
+          - text:    
+          - generic [ref=e93]:
+            - heading "View and manage rule actions for events" [level=3] [ref=e95]
+            - generic [ref=e96]:
+              - generic [ref=e97]: Loading...
+              - text:  
+        - generic [ref=e101]: SFTPGo 2.7.1 13123486
+  - text:  
+  - generic: 

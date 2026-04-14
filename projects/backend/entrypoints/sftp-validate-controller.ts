@@ -20,6 +20,8 @@ export class SftpValidateController {
       return response(400, "file_path must be a string");
     }
 
+    console.log("[sftp-validate] received file_path:", filePath);
+
     try {
       coordinator.validate(decodeURIComponent(filePath));
       return response(200, "OK");

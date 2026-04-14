@@ -1,0 +1,27 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - generic [ref=e8]:
+      - img "Logo" [ref=e10]
+      - heading "WebAdmin" [level=1] [ref=e12]
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - generic [ref=e15]: 
+        - generic: 
+        - generic: 
+      - generic [ref=e17]: Invalid credentials, please retry
+      - button "" [ref=e18] [cursor=pointer]:
+        - generic [ref=e19]: 
+    - textbox "Username" [ref=e21]: alexallard
+    - generic [ref=e23]:
+      - textbox "Password" [ref=e24]: monster
+      - generic [ref=e25] [cursor=pointer]:
+        - generic [ref=e26]:
+          - generic [ref=e27]: 
+          - generic: 
+          - generic: 
+          - generic: 
+        - text:   
+    - button "Sign in" [ref=e29] [cursor=pointer]
+  - separator [ref=e30]
+  - link "Go to WebClient" [ref=e33] [cursor=pointer]:
+    - /url: /web/client/login

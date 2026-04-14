@@ -1,0 +1,175 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - text:  
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "         " [ref=e10] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e11]:
+              - generic [ref=e12]: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+            - text:  
+          - text:                
+        - generic [ref=e13]:
+          - generic [ref=e15] [cursor=pointer]:
+            - generic [ref=e16]: 
+            - generic: 
+          - text:  
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e21]:
+          - img "Logo" [ref=e22]
+          - text: WebAdmin
+        - generic [ref=e25]:
+          - link "     Users" [ref=e27] [cursor=pointer]:
+            - /url: /web/admin/users
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e28]: Users
+          - link "    Groups" [ref=e30] [cursor=pointer]:
+            - /url: /web/admin/groups
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e31]: Groups
+          - link "  Virtual folders" [ref=e33] [cursor=pointer]:
+            - /url: /web/admin/folders
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e34]: Virtual folders
+          - link "  Active connections" [ref=e36] [cursor=pointer]:
+            - /url: /web/admin/connections
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e37]: Active connections
+          - generic [ref=e38]:
+            - generic [ref=e39] [cursor=pointer]:
+              - generic:
+                - generic:
+                  - generic: 
+                  - generic: 
+              - generic [ref=e40]: Event Manager
+            - generic [ref=e42]:
+              - link "Rules" [ref=e44] [cursor=pointer]:
+                - /url: /web/admin/eventrules
+                - generic [ref=e47]: Rules
+              - link "Actions" [ref=e49] [cursor=pointer]:
+                - /url: /web/admin/eventactions
+                - generic [ref=e52]: Actions
+          - generic [ref=e54] [cursor=pointer]:
+            - generic:
+              - generic: 
+            - generic [ref=e55]: IP Manager
+          - generic [ref=e58] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e59]: Server Manager
+          - link " Admins" [ref=e62] [cursor=pointer]:
+            - /url: /web/admin/managers
+            - generic:
+              - generic: 
+            - generic [ref=e63]: Admins
+          - link "   Roles" [ref=e65] [cursor=pointer]:
+            - /url: /web/admin/roles
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e66]: Roles
+      - generic [ref=e67]:
+        - generic [ref=e70]:
+          - text:    
+          - generic [ref=e71]:
+            - heading "View and manage rules for events" [level=3] [ref=e73]
+            - generic [ref=e80]:
+              - generic [ref=e81]:
+                - generic [ref=e82]:
+                  - generic [ref=e83]: 
+                  - textbox "Search" [ref=e84]
+                - link " Add" [ref=e86] [cursor=pointer]:
+                  - /url: /web/admin/eventrule
+                  - generic [ref=e87]: 
+                  - text: Add
+              - generic [ref=e88]:
+                - table [ref=e90]:
+                  - rowgroup [ref=e97]:
+                    - row "Name Status Trigger Actions" [ref=e98]:
+                      - columnheader "Name" [ref=e99] [cursor=pointer]:
+                        - generic [ref=e101]: Name
+                      - columnheader "Status" [ref=e102] [cursor=pointer]:
+                        - generic [ref=e104]: Status
+                      - columnheader "Trigger" [ref=e105] [cursor=pointer]:
+                        - generic [ref=e107]: Trigger
+                      - columnheader "Actions" [ref=e108] [cursor=pointer]:
+                        - generic [ref=e110]: Actions
+                      - columnheader [ref=e111]
+                  - rowgroup [ref=e112]:
+                    - row "on-upload-notify Active Filesystem events upload-webhook Actions  Edit Delete" [ref=e144]:
+                      - cell "on-upload-notify" [ref=e114]
+                      - cell "Active" [ref=e115]
+                      - cell "Filesystem events" [ref=e116]
+                      - cell "upload-webhook" [ref=e117]
+                      - cell "Actions  Edit Delete" [ref=e145]:
+                        - button "Actions " [active] [ref=e119] [cursor=pointer]:
+                          - generic [ref=e120]: Actions
+                          - generic [ref=e121]: 
+                        - generic [ref=e146]:
+                          - link "Edit" [ref=e148] [cursor=pointer]:
+                            - /url: "#"
+                          - link "Delete" [ref=e150] [cursor=pointer]:
+                            - /url: "#"
+                    - row "pre-upload-validate Active Filesystem events pre-upload-validate Actions " [ref=e122]:
+                      - cell "pre-upload-validate" [ref=e123]
+                      - cell "Active" [ref=e124]
+                      - cell "Filesystem events" [ref=e125]
+                      - cell "pre-upload-validate" [ref=e126]
+                      - cell "Actions " [ref=e127]:
+                        - button "Actions " [ref=e128] [cursor=pointer]:
+                          - generic [ref=e129]: Actions
+                          - generic [ref=e130]: 
+                - generic [ref=e131]:
+                  - generic [ref=e132]:
+                    - combobox [ref=e134]:
+                      - option "10" [selected]
+                      - option "25"
+                      - option "50"
+                      - option "100"
+                    - status [ref=e135]: Showing 1 to 2 of 2 records
+                  - navigation "pagination" [ref=e138]:
+                    - list [ref=e139]:
+                      - listitem [ref=e140]:
+                        - link "Previous" [disabled]
+                      - listitem [ref=e141]:
+                        - link "1" [ref=e142] [cursor=pointer]
+                      - listitem [ref=e143]:
+                        - link "Next" [disabled]
+        - generic [ref=e79]: SFTPGo 2.7.1 13123486
+  - text:  
+  - generic: 

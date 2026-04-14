@@ -1,0 +1,108 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - text:  
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "         " [ref=e10] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e11]:
+              - generic [ref=e12]: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+            - text:  
+          - text:                
+        - generic [ref=e13]:
+          - generic [ref=e15] [cursor=pointer]:
+            - generic [ref=e16]: 
+            - generic: 
+          - text:  
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e21]:
+          - img "Logo" [ref=e22]
+          - text: WebAdmin
+        - generic [ref=e25]:
+          - link "     Users" [ref=e27] [cursor=pointer]:
+            - /url: /web/admin/users
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e28]: Users
+          - link "    Groups" [ref=e30] [cursor=pointer]:
+            - /url: /web/admin/groups
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e31]: Groups
+          - link "  Virtual folders" [ref=e33] [cursor=pointer]:
+            - /url: /web/admin/folders
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e34]: Virtual folders
+          - link "  Active connections" [ref=e36] [cursor=pointer]:
+            - /url: /web/admin/connections
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e37]: Active connections
+          - generic [ref=e39] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e40]: Event Manager
+          - generic [ref=e43] [cursor=pointer]:
+            - generic:
+              - generic: 
+            - generic [ref=e44]: IP Manager
+          - generic [ref=e47] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e48]: Server Manager
+          - link " Admins" [ref=e51] [cursor=pointer]:
+            - /url: /web/admin/managers
+            - generic:
+              - generic: 
+            - generic [ref=e52]: Admins
+          - link "   Roles" [ref=e54] [cursor=pointer]:
+            - /url: /web/admin/roles
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e55]: Roles
+      - generic [ref=e56]:
+        - generic [ref=e59]:
+          - text:    
+          - generic [ref=e60]:
+            - heading "View and manage users" [level=3] [ref=e62]
+            - generic [ref=e63]:
+              - generic [ref=e64]: Loading...
+              - text:   
+        - generic [ref=e68]: SFTPGo 2.7.1 13123486
+  - text:  
+  - generic: 

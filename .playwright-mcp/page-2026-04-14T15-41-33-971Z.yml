@@ -1,0 +1,225 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - text:  
+      - generic [ref=e8]:
+        - generic [ref=e11] [cursor=pointer]:
+          - generic [ref=e12]: 
+          - generic: 
+          - generic: 
+        - generic [ref=e13]:
+          - link "         " [ref=e14] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e15]:
+              - generic [ref=e16]: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+            - text:  
+          - text:                
+        - generic [ref=e17]:
+          - generic [ref=e19] [cursor=pointer]:
+            - generic [ref=e20]: 
+            - generic: 
+          - text:  
+    - generic [ref=e21]:
+      - generic [ref=e22]:
+        - generic [ref=e25]:
+          - img "Logo" [ref=e26]
+          - text: WebAdmin
+        - generic [ref=e29]:
+          - link "     Users" [ref=e31] [cursor=pointer]:
+            - /url: /web/admin/users
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e32]: Users
+          - link "    Groups" [ref=e34] [cursor=pointer]:
+            - /url: /web/admin/groups
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e35]: Groups
+          - link "  Virtual folders" [ref=e37] [cursor=pointer]:
+            - /url: /web/admin/folders
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e38]: Virtual folders
+          - link "  Active connections" [ref=e40] [cursor=pointer]:
+            - /url: /web/admin/connections
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e41]: Active connections
+          - generic [ref=e42]:
+            - generic [ref=e43] [cursor=pointer]:
+              - generic:
+                - generic:
+                  - generic: 
+                  - generic: 
+              - generic [ref=e44]: Event Manager
+            - generic [ref=e46]:
+              - link "Rules" [ref=e48] [cursor=pointer]:
+                - /url: /web/admin/eventrules
+                - generic [ref=e51]: Rules
+              - link "Actions" [ref=e53] [cursor=pointer]:
+                - /url: /web/admin/eventactions
+                - generic [ref=e56]: Actions
+          - generic [ref=e58] [cursor=pointer]:
+            - generic:
+              - generic: 
+            - generic [ref=e59]: IP Manager
+          - generic [ref=e62] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e63]: Server Manager
+          - link " Admins" [ref=e66] [cursor=pointer]:
+            - /url: /web/admin/managers
+            - generic:
+              - generic: 
+            - generic [ref=e67]: Admins
+          - link "   Roles" [ref=e69] [cursor=pointer]:
+            - /url: /web/admin/roles
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e70]: Roles
+      - generic [ref=e71]:
+        - generic [ref=e75]:
+          - heading "Update action" [level=3] [ref=e77]
+          - generic [ref=e78]:
+            - text:    
+            - generic [ref=e79]:
+              - generic [ref=e80]:
+                - generic [ref=e81]: Name
+                - textbox "Name" [ref=e83]:
+                  - /placeholder: ""
+                  - text: upload-webhook
+              - generic [ref=e84]:
+                - generic [ref=e85]: Description
+                - textbox "Description" [ref=e87]: Send POST on file upload with file path and S3 URL
+              - generic [ref=e88]:
+                - generic [ref=e89]: Type
+                - generic [ref=e90]:
+                  - combobox [ref=e91]
+                  - combobox "HTTP" [ref=e94] [cursor=pointer]:
+                    - textbox "HTTP" [ref=e95]
+              - generic [ref=e96]:
+                - generic [ref=e97]: Server URL
+                - generic [ref=e98]:
+                  - textbox "Server URL" [ref=e99]: https://webhook.site/240f15f8-e3e8-4261-ad39-c4c2e29798e5
+                  - generic [ref=e100]: i.e https://host:port/path. Placeholders are supported within the URL path
+              - generic [ref=e101]:
+                - generic [ref=e102]: Username
+                - generic [ref=e103]:
+                  - textbox "Username" [ref=e104]
+                  - generic [ref=e105]: Placeholders are supported
+              - generic [ref=e106]:
+                - generic [ref=e107]: Password
+                - textbox "Password" [ref=e109]
+              - generic [ref=e110]:
+                - heading "HTTP headers" [level=3] [ref=e112]
+                - generic [ref=e114]:
+                  - generic [ref=e119]:
+                    - textbox "Name" [ref=e121]: Content-Type
+                    - textbox "Value" [ref=e123]: application/json
+                    - link "    " [ref=e125] [cursor=pointer]:
+                      - /url: "#"
+                      - generic [ref=e126]:
+                        - generic [ref=e127]: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                  - link " Add" [ref=e129] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e130]: 
+                    - text: Add
+              - generic [ref=e131]:
+                - heading "Query string parameters" [level=3] [ref=e133]
+                - generic [ref=e135]:
+                  - generic [ref=e139]:
+                    - textbox "Name" [ref=e141]
+                    - textbox "Value" [ref=e143]
+                    - link "    " [ref=e145] [cursor=pointer]:
+                      - /url: "#"
+                      - generic [ref=e146]:
+                        - generic [ref=e147]: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                  - link " Add" [ref=e149] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e150]: 
+                    - text: Add
+              - generic [ref=e151]:
+                - generic [ref=e152]: Method
+                - generic [ref=e153]:
+                  - combobox [ref=e154]
+                  - combobox "POST" [ref=e157] [cursor=pointer]:
+                    - textbox "POST" [ref=e158]
+              - generic [ref=e159]:
+                - generic [ref=e160]: Timeout
+                - generic [ref=e161]:
+                  - spinbutton "Timeout" [ref=e162]: "15"
+                  - generic [ref=e163]: Ignored for multipart requests with files as attachments
+              - generic [ref=e166]:
+                - checkbox "Skip TLS verify. This should be used only for testing" [ref=e167]
+                - generic [ref=e168]: Skip TLS verify. This should be used only for testing
+              - generic [ref=e169]:
+                - generic [ref=e170]: Body
+                - generic [ref=e171]:
+                  - textbox "Body" [ref=e172]: "{\"file_path\": \"{{.VirtualPath}}\", \"s3_url\": \"https://dooks-recordings.s3.us-east-1.amazonaws.com{{.VirtualPath}}\", \"username\": \"{{.Name}}\", \"file_size\": {{.FileSize}}}"
+                  - generic [ref=e173]: Placeholders are supported. Ignored for HTTP get requested. Leave empty for multipart requests
+              - generic [ref=e174]:
+                - heading "Multipart body" [level=3] [ref=e176]
+                - generic [ref=e178]:
+                  - generic [ref=e181]: HTTP Multipart requests allow to combine one or more sets of data into a single body. For each part, you can set a file path or a body as text. Placeholders are supported in file path, body, header values
+                  - generic [ref=e184]:
+                    - generic [ref=e185]:
+                      - textbox "Part name" [ref=e187]
+                      - textbox "File path" [ref=e189]
+                      - 'textbox "Additional part headers one per line as \"key: value\"" [ref=e191]'
+                      - link "    " [ref=e193] [cursor=pointer]:
+                        - /url: "#"
+                        - generic [ref=e194]:
+                          - generic [ref=e195]: 
+                          - generic: 
+                          - generic: 
+                          - generic: 
+                          - generic: 
+                    - textbox "Body" [ref=e198]
+                  - link " Add" [ref=e200] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e201]: 
+                    - text: Add
+              - text:                        
+              - button "Save" [ref=e203] [cursor=pointer]
+        - generic [ref=e206]: SFTPGo 2.7.1 13123486
+  - text:  
+  - generic: 
+  - text: 

@@ -1,0 +1,314 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - text:  
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "         " [ref=e10] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e11]:
+              - generic [ref=e12]: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+            - text:  
+          - text:                
+        - generic [ref=e13]:
+          - generic [ref=e15] [cursor=pointer]:
+            - generic [ref=e16]: 
+            - generic: 
+          - text:  
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e21]:
+          - img "Logo" [ref=e22]
+          - text: WebAdmin
+        - generic [ref=e25]:
+          - link "     Users" [ref=e27] [cursor=pointer]:
+            - /url: /web/admin/users
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e28]: Users
+          - link "    Groups" [ref=e30] [cursor=pointer]:
+            - /url: /web/admin/groups
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e31]: Groups
+          - link "  Virtual folders" [ref=e33] [cursor=pointer]:
+            - /url: /web/admin/folders
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e34]: Virtual folders
+          - link "  Active connections" [ref=e36] [cursor=pointer]:
+            - /url: /web/admin/connections
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e37]: Active connections
+          - generic [ref=e38]:
+            - generic [ref=e39] [cursor=pointer]:
+              - generic:
+                - generic:
+                  - generic: 
+                  - generic: 
+              - generic [ref=e40]: Event Manager
+            - generic [ref=e42]:
+              - link "Rules" [ref=e44] [cursor=pointer]:
+                - /url: /web/admin/eventrules
+                - generic [ref=e47]: Rules
+              - link "Actions" [ref=e49] [cursor=pointer]:
+                - /url: /web/admin/eventactions
+                - generic [ref=e52]: Actions
+          - generic [ref=e54] [cursor=pointer]:
+            - generic:
+              - generic: 
+            - generic [ref=e55]: IP Manager
+          - generic [ref=e58] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e59]: Server Manager
+          - link " Admins" [ref=e62] [cursor=pointer]:
+            - /url: /web/admin/managers
+            - generic:
+              - generic: 
+            - generic [ref=e63]: Admins
+          - link "   Roles" [ref=e65] [cursor=pointer]:
+            - /url: /web/admin/roles
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e66]: Roles
+      - generic [ref=e67]:
+        - generic [ref=e71]:
+          - heading "Update rule" [level=3] [ref=e73]
+          - generic [ref=e74]:
+            - text:    
+            - generic [ref=e75]:
+              - generic [ref=e76]:
+                - generic [ref=e77]: Name
+                - textbox "Name" [ref=e79]:
+                  - /placeholder: ""
+                  - text: on-upload-notify
+              - generic [ref=e80]:
+                - generic [ref=e81]: Status
+                - generic [ref=e82]:
+                  - combobox [ref=e83]
+                  - combobox "Active" [ref=e86] [cursor=pointer]:
+                    - textbox "Active" [ref=e87]
+              - generic [ref=e88]:
+                - generic [ref=e89]: Description
+                - textbox "Description" [ref=e91]: Trigger webhook on every file upload
+              - generic [ref=e92]:
+                - generic [ref=e93]: Trigger
+                - generic [ref=e94]:
+                  - combobox [ref=e95]
+                  - combobox "Filesystem events" [ref=e98] [cursor=pointer]:
+                    - textbox "Filesystem events" [ref=e99]
+              - generic [ref=e100]:
+                - generic [ref=e101]: Fs events
+                - generic [ref=e102]:
+                  - listbox [ref=e103]:
+                    - option [selected] [ref=e104]: upload
+                    - option [ref=e105]: pre-upload
+                    - option [ref=e106]: first-upload
+                    - option [ref=e107]: download
+                    - option [ref=e108]: pre-download
+                    - option [ref=e109]: first-download
+                    - option [ref=e110]: delete
+                    - option [ref=e111]: pre-delete
+                    - option [ref=e112]: rename
+                    - option [ref=e113]: mkdir
+                    - option [ref=e114]: rmdir
+                    - option [ref=e115]: copy
+                    - option [ref=e116]: ssh_cmd
+                  - combobox [ref=e119] [cursor=pointer]:
+                    - list [ref=e120]:
+                      - listitem "upload" [ref=e121]:
+                        - button "Remove item" [ref=e122]
+                        - generic [ref=e123]: upload
+                    - searchbox "Search" [ref=e125]
+              - text:      
+              - generic [ref=e126]:
+                - generic [ref=e127]: Protocol filters
+                - generic [ref=e128]:
+                  - listbox [ref=e129]:
+                    - option [ref=e130]: SFTP
+                    - option [ref=e131]: SCP
+                    - option [ref=e132]: SSH
+                    - option [ref=e133]: FTP
+                    - option [ref=e134]: DAV
+                    - option [ref=e135]: HTTP
+                    - option [ref=e136]: HTTPShare
+                    - option [ref=e137]: OIDC
+                  - combobox [ref=e140] [cursor=pointer]:
+                    - list
+                    - searchbox "Search" [ref=e142]
+                  - generic [ref=e143]: No filter means always triggering events
+              - generic [ref=e144]:
+                - generic [ref=e145]: Status filters
+                - generic [ref=e146]:
+                  - listbox [ref=e147]:
+                    - option [ref=e148]: OK
+                    - option [ref=e149]: Failed
+                    - option [ref=e150]: Quota exceeded
+                  - combobox [ref=e153] [cursor=pointer]:
+                    - list
+                    - searchbox "Search" [ref=e155]
+                  - generic [ref=e156]: No filter means always triggering events
+              - generic [ref=e157]:
+                - heading "Name filters" [level=3] [ref=e159]
+                - generic [ref=e161]:
+                  - generic [ref=e164]: Shell-like pattern filters for usernames, folder names. For example "user*"" will match names starting with "user". For provider events, this filter is applied to the username of the admin executing the event
+                  - generic [ref=e168]:
+                    - textbox [ref=e170]
+                    - generic [ref=e171]:
+                      - combobox [ref=e172]
+                      - combobox "Mode" [ref=e175] [cursor=pointer]:
+                        - textbox "Mode" [ref=e176]
+                    - link "    " [ref=e178] [cursor=pointer]:
+                      - /url: "#"
+                      - generic [ref=e179]:
+                        - generic [ref=e180]: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                  - link " Add" [ref=e182] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e183]: 
+                    - text: Add
+              - generic [ref=e184]:
+                - heading "Group name filters" [level=3] [ref=e186]
+                - generic [ref=e188]:
+                  - generic [ref=e191]: Shell-like pattern filters for group names. For example "group*"" will match group names starting with "group"
+                  - generic [ref=e195]:
+                    - textbox [ref=e197]
+                    - generic [ref=e198]:
+                      - combobox [ref=e199]
+                      - combobox "Mode" [ref=e202] [cursor=pointer]:
+                        - textbox "Mode" [ref=e203]
+                    - link "    " [ref=e205] [cursor=pointer]:
+                      - /url: "#"
+                      - generic [ref=e206]:
+                        - generic [ref=e207]: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                  - link " Add" [ref=e209] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e210]: 
+                    - text: Add
+              - generic [ref=e211]:
+                - heading "Role name filters" [level=3] [ref=e213]
+                - generic [ref=e215]:
+                  - generic [ref=e218]: Shell-like pattern filters for role names. For example "role*"" will match role names starting with "role"
+                  - generic [ref=e222]:
+                    - textbox [ref=e224]
+                    - generic [ref=e225]:
+                      - combobox [ref=e226]
+                      - combobox "Mode" [ref=e229] [cursor=pointer]:
+                        - textbox "Mode" [ref=e230]
+                    - link "    " [ref=e232] [cursor=pointer]:
+                      - /url: "#"
+                      - generic [ref=e233]:
+                        - generic [ref=e234]: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                  - link " Add" [ref=e236] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e237]: 
+                    - text: Add
+              - generic [ref=e238]:
+                - heading "Path filters" [level=3] [ref=e240]
+                - generic [ref=e242]:
+                  - generic [ref=e245]: Shell-like pattern filters on filesystem event paths. For example "/adir/*.txt"" will match paths in the "/adir" directory ending with ".txt". Double asterisk is supported, for example "/**/*.txt" will match any file ending with ".txt". "/mydir/**" will match any entry in "/mydir"
+                  - generic [ref=e249]:
+                    - textbox [ref=e251]
+                    - generic [ref=e252]:
+                      - combobox [ref=e253]
+                      - combobox "Mode" [ref=e256] [cursor=pointer]:
+                        - textbox "Mode" [ref=e257]
+                    - link "    " [ref=e259] [cursor=pointer]:
+                      - /url: "#"
+                      - generic [ref=e260]:
+                        - generic [ref=e261]: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                  - link " Add" [ref=e263] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e264]: 
+                    - text: Add
+              - generic [ref=e265]:
+                - heading "File size limits" [level=3] [ref=e267]
+                - generic [ref=e268]:
+                  - generic [ref=e271]: 0 means no limit. You can use MB/GB suffix
+                  - generic [ref=e272]:
+                    - generic [ref=e273]: Minimum size
+                    - textbox "Minimum size" [ref=e275]: "0"
+                    - generic [ref=e277]: Maximum size
+                    - textbox "Maximum size" [ref=e279]: "0"
+              - generic [ref=e280]:
+                - heading "Actions" [level=3] [ref=e282]
+                - generic [ref=e284]:
+                  - generic [ref=e287]: One or more actions to execute. The "Execute sync" option is supported for "upload" events and required for "pre-*" events and Identity provider login events if the action checks the account
+                  - generic [ref=e292]:
+                    - generic [ref=e293]:
+                      - combobox [ref=e294]
+                      - combobox "upload-webhook" [ref=e297] [cursor=pointer]:
+                        - button "Remove all items" [ref=e298]
+                        - textbox "upload-webhook" [ref=e299]
+                    - generic [ref=e300]:
+                      - listbox [ref=e301]:
+                        - option [ref=e302]
+                        - option [ref=e303]: Stop on failure
+                        - option [ref=e304]: Synchronous execution
+                        - option [ref=e305]: Failure action
+                      - combobox [ref=e308] [cursor=pointer]:
+                        - list
+                        - searchbox "Search" [ref=e310]
+                    - link "    " [ref=e312] [cursor=pointer]:
+                      - /url: "#"
+                      - generic [ref=e313]:
+                        - generic [ref=e314]: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                  - link " Add" [ref=e316] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e317]: 
+                    - text: Add
+              - button "Save" [ref=e319] [cursor=pointer]
+        - generic [ref=e322]: SFTPGo 2.7.1 13123486
+  - text:  
+  - generic: 

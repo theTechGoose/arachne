@@ -1,0 +1,182 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - text:  
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "         " [ref=e10] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e11]:
+              - generic [ref=e12]: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+            - text:  
+          - text:                
+        - generic [ref=e13]:
+          - generic [ref=e15] [cursor=pointer]:
+            - generic [ref=e16]: 
+            - generic: 
+          - text:  
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e21]:
+          - img "Logo" [ref=e22]
+          - text: WebAdmin
+        - generic [ref=e25]:
+          - link "     Users" [ref=e27] [cursor=pointer]:
+            - /url: /web/admin/users
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e28]: Users
+          - link "    Groups" [ref=e30] [cursor=pointer]:
+            - /url: /web/admin/groups
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e31]: Groups
+          - link "  Virtual folders" [ref=e33] [cursor=pointer]:
+            - /url: /web/admin/folders
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e34]: Virtual folders
+          - link "  Active connections" [ref=e36] [cursor=pointer]:
+            - /url: /web/admin/connections
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e37]: Active connections
+          - generic [ref=e39] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e40]: Event Manager
+          - generic [ref=e43] [cursor=pointer]:
+            - generic:
+              - generic: 
+            - generic [ref=e44]: IP Manager
+          - generic [ref=e47] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e48]: Server Manager
+          - link " Admins" [ref=e51] [cursor=pointer]:
+            - /url: /web/admin/managers
+            - generic:
+              - generic: 
+            - generic [ref=e52]: Admins
+          - link "   Roles" [ref=e54] [cursor=pointer]:
+            - /url: /web/admin/roles
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e55]: Roles
+      - generic [ref=e56]:
+        - generic [ref=e60]:
+          - heading "Add user" [level=3] [ref=e62]
+          - generic [ref=e63]:
+            - text:    
+            - generic [ref=e64]:
+              - generic [ref=e65]:
+                - generic [ref=e66]: Username
+                - textbox "Username" [ref=e68]:
+                  - /placeholder: ""
+              - generic [ref=e69]:
+                - generic [ref=e70]: Password
+                - textbox "Password" [ref=e72]
+              - generic [ref=e73]:
+                - generic [ref=e74]: Require password change
+                - generic [ref=e76]:
+                  - checkbox "Require password change The user will need to change the password from WebClient to activate the account" [ref=e77]
+                  - generic [ref=e78]: The user will need to change the password from WebClient to activate the account
+              - generic [ref=e79]:
+                - heading "Public keys" [level=3] [ref=e81]
+                - generic [ref=e83]:
+                  - generic [ref=e86]: Public keys can be used for SFTP authentication
+                  - generic [ref=e90]:
+                    - textbox "Paste a public key here" [ref=e92]
+                    - link "     Delete" [ref=e94] [cursor=pointer]:
+                      - /url: "#"
+                      - generic [ref=e95]:
+                        - generic [ref=e96]: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                      - text: Delete
+                  - link " Add" [ref=e98] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e99]: 
+                    - text: Add
+              - text:      
+              - generic [ref=e100]:
+                - heading "File system" [level=3] [ref=e102]
+                - generic [ref=e103]:
+                  - generic [ref=e104]:
+                    - generic [ref=e105]: Storage
+                    - generic [ref=e106]:
+                      - combobox [ref=e107]
+                      - combobox "Local disk" [ref=e110] [cursor=pointer]:
+                        - textbox "Local disk" [ref=e111]
+                  - generic [ref=e112]:
+                    - generic [ref=e113]: Root directory
+                    - generic [ref=e114]:
+                      - textbox "Root directory" [ref=e115]:
+                        - /placeholder: Absolute path to a directory on local disk
+                      - generic [ref=e116]: Leave blank for an appropriate default
+                  - generic [ref=e117]:
+                    - generic [ref=e118]: Download buffer (MB)
+                    - generic [ref=e119]:
+                      - spinbutton "Download buffer (MB)" [ref=e120]: "0"
+                      - generic [ref=e121]: 0 means no buffer
+                    - generic [ref=e123]: Upload buffer (MB)
+                    - generic [ref=e124]:
+                      - spinbutton "Upload buffer (MB)" [ref=e125]: "0"
+                      - generic [ref=e126]: 0 means no buffer
+              - generic [ref=e127]:
+                - generic [ref=e128]:
+                  - heading "Profile" [level=2] [ref=e129] [cursor=pointer]:
+                    - button "Profile" [expanded] [ref=e130]:
+                      - generic [ref=e131]: Profile
+                  - text:       
+                - generic [ref=e132]:
+                  - heading "ACLs" [level=2] [ref=e133] [cursor=pointer]:
+                    - button "ACLs" [expanded] [ref=e134]:
+                      - generic [ref=e135]: ACLs
+                  - text:                  
+                - generic [ref=e136]:
+                  - heading "Disk quota and bandwidth limits" [level=2] [ref=e137] [cursor=pointer]:
+                    - button "Disk quota and bandwidth limits" [expanded] [ref=e138]:
+                      - generic [ref=e139]: Disk quota and bandwidth limits
+                  - text:      
+                - heading "Advanced settings" [level=2] [ref=e141] [cursor=pointer]:
+                  - button "Advanced settings" [expanded] [ref=e142]:
+                    - generic [ref=e143]: Advanced settings
+              - button "Save" [ref=e145] [cursor=pointer]
+        - generic [ref=e148]: SFTPGo 2.7.1 13123486
+  - text:  
+  - generic: 

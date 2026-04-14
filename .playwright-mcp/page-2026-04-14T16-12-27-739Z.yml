@@ -1,0 +1,552 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - text:  
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link "         " [ref=e10] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e11]:
+              - generic [ref=e12]: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+              - generic: 
+            - text:  
+          - text:                
+        - generic [ref=e13]:
+          - generic [ref=e15] [cursor=pointer]:
+            - generic [ref=e16]: 
+            - generic: 
+          - text:  
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e21]:
+          - img "Logo" [ref=e22]
+          - text: WebAdmin
+        - generic [ref=e25]:
+          - link "     Users" [ref=e27] [cursor=pointer]:
+            - /url: /web/admin/users
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e28]: Users
+          - link "    Groups" [ref=e30] [cursor=pointer]:
+            - /url: /web/admin/groups
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e31]: Groups
+          - link "  Virtual folders" [ref=e33] [cursor=pointer]:
+            - /url: /web/admin/folders
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e34]: Virtual folders
+          - link "  Active connections" [ref=e36] [cursor=pointer]:
+            - /url: /web/admin/connections
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e37]: Active connections
+          - generic [ref=e39] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+            - generic [ref=e40]: Event Manager
+          - generic [ref=e43] [cursor=pointer]:
+            - generic:
+              - generic: 
+            - generic [ref=e44]: IP Manager
+          - generic [ref=e47] [cursor=pointer]:
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e48]: Server Manager
+          - link " Admins" [ref=e51] [cursor=pointer]:
+            - /url: /web/admin/managers
+            - generic:
+              - generic: 
+            - generic [ref=e52]: Admins
+          - link "   Roles" [ref=e54] [cursor=pointer]:
+            - /url: /web/admin/roles
+            - generic:
+              - generic:
+                - generic: 
+                - generic: 
+                - generic: 
+            - generic [ref=e55]: Roles
+      - generic [ref=e56]:
+        - generic [ref=e60]:
+          - heading "Add user" [level=3] [ref=e62]
+          - generic [ref=e63]:
+            - generic [ref=e64]:
+              - generic [ref=e65]:
+                - generic [ref=e66]: 
+                - generic: 
+                - generic: 
+              - generic [ref=e68]: The specified username already exists
+              - button "" [ref=e69] [cursor=pointer]:
+                - generic [ref=e70]: 
+            - generic [ref=e71]:
+              - generic [ref=e72]:
+                - generic [ref=e73]: Username
+                - textbox "Username" [ref=e75]:
+                  - /placeholder: ""
+                  - text: sftpuser
+              - generic [ref=e76]:
+                - generic [ref=e77]: Password
+                - textbox "Password" [ref=e79]
+              - generic [ref=e80]:
+                - generic [ref=e81]: Require password change
+                - generic [ref=e83]:
+                  - checkbox "Require password change The user will need to change the password from WebClient to activate the account" [ref=e84]
+                  - generic [ref=e85]: The user will need to change the password from WebClient to activate the account
+              - generic [ref=e86]:
+                - heading "Public keys" [level=3] [ref=e88]
+                - generic [ref=e90]:
+                  - generic [ref=e93]: Public keys can be used for SFTP authentication
+                  - generic [ref=e97]:
+                    - textbox "Paste a public key here" [ref=e99]
+                    - link "     Delete" [ref=e101] [cursor=pointer]:
+                      - /url: "#"
+                      - generic [ref=e102]:
+                        - generic [ref=e103]: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                        - generic: 
+                      - text: Delete
+                  - link " Add" [ref=e105] [cursor=pointer]:
+                    - /url: "#"
+                    - generic [ref=e106]: 
+                    - text: Add
+              - text:      
+              - generic [ref=e107]:
+                - heading "File system" [level=3] [ref=e109]
+                - generic [ref=e110]:
+                  - generic [ref=e111]:
+                    - generic [ref=e112]: Storage
+                    - generic [ref=e113]:
+                      - combobox [ref=e114]
+                      - combobox "Local disk" [ref=e117] [cursor=pointer]:
+                        - textbox "Local disk" [ref=e118]
+                  - generic [ref=e119]:
+                    - generic [ref=e120]: Root directory
+                    - textbox "Root directory" [ref=e122]:
+                      - /placeholder: Absolute path to a directory on local disk
+                      - text: /usr/local/var/sftpgo/data/sftpuser
+                  - generic [ref=e123]:
+                    - generic [ref=e124]: Download buffer (MB)
+                    - generic [ref=e125]:
+                      - spinbutton "Download buffer (MB)" [ref=e126]: "0"
+                      - generic [ref=e127]: 0 means no buffer
+                    - generic [ref=e129]: Upload buffer (MB)
+                    - generic [ref=e130]:
+                      - spinbutton "Upload buffer (MB)" [ref=e131]: "0"
+                      - generic [ref=e132]: 0 means no buffer
+              - generic [ref=e133]:
+                - generic [ref=e134]:
+                  - heading "Profile" [level=2] [ref=e135] [cursor=pointer]:
+                    - button "Profile" [expanded] [ref=e136]:
+                      - generic [ref=e137]: Profile
+                  - generic "Profile" [ref=e138]:
+                    - generic [ref=e139]:
+                      - generic [ref=e140]:
+                        - generic [ref=e141]: Status
+                        - generic [ref=e142]:
+                          - combobox [ref=e143]
+                          - combobox "Active" [ref=e146] [cursor=pointer]:
+                            - textbox "Active" [ref=e147]
+                      - generic [ref=e148]:
+                        - generic [ref=e149]: Expiration
+                        - generic [ref=e150]:
+                          - textbox "Expiration" [ref=e151] [cursor=pointer]:
+                            - /placeholder: Pick an expiration date
+                          - text: 
+                      - generic [ref=e152]:
+                        - generic [ref=e153]: Email
+                        - textbox "Email" [ref=e155]:
+                          - /placeholder: ""
+                      - generic [ref=e156]:
+                        - heading "Additional emails" [level=3] [ref=e158]
+                        - generic [ref=e160]:
+                          - generic [ref=e164]:
+                            - textbox [ref=e166]
+                            - link "     Delete" [ref=e168] [cursor=pointer]:
+                              - /url: "#"
+                              - generic [ref=e169]:
+                                - generic [ref=e170]: 
+                                - generic: 
+                                - generic: 
+                                - generic: 
+                                - generic: 
+                              - text: Delete
+                          - link " Add" [ref=e172] [cursor=pointer]:
+                            - /url: "#"
+                            - generic [ref=e173]: 
+                            - text: Add
+                      - generic [ref=e174]:
+                        - generic [ref=e175]: Password strength
+                        - generic [ref=e176]:
+                          - spinbutton "Password strength" [ref=e177]: "0"
+                          - generic [ref=e178]: Values in the 50-70 range are suggested for common use cases. 0 means disabled, any password will be accepted
+                      - generic [ref=e179]:
+                        - generic [ref=e180]: Password expiration
+                        - generic [ref=e181]:
+                          - spinbutton "Password expiration" [ref=e182]: "0"
+                          - generic [ref=e183]: Password expiration as number of days. 0 means no expiration
+                      - generic [ref=e184]:
+                        - generic [ref=e185]: Default shares expiration
+                        - generic [ref=e186]:
+                          - spinbutton "Default shares expiration" [ref=e187]: "0"
+                          - generic [ref=e188]: Default expiration for new shares as number of days
+                      - generic [ref=e189]:
+                        - generic [ref=e190]: Maximum shares expiration
+                        - generic [ref=e191]:
+                          - spinbutton "Maximum shares expiration" [ref=e192]: "0"
+                          - generic [ref=e193]: Maximum allowed expiration, as number of days, when a user creates or updates a share
+                      - generic [ref=e194]:
+                        - generic [ref=e195]: Description
+                        - textbox "Description" [ref=e197]
+                      - generic [ref=e198]:
+                        - generic [ref=e199]: Additional info
+                        - textbox "Additional info" [ref=e201]
+                - generic [ref=e202]:
+                  - heading "ACLs" [level=2] [ref=e203] [cursor=pointer]:
+                    - button "ACLs" [expanded] [ref=e204]:
+                      - generic [ref=e205]: ACLs
+                  - generic "ACLs" [ref=e206]:
+                    - generic [ref=e207]:
+                      - generic [ref=e208]:
+                        - generic [ref=e209]: Permissions
+                        - generic [ref=e210]:
+                          - listbox [ref=e211]:
+                            - option [selected] [ref=e212]: "*"
+                            - option [ref=e213]: list
+                            - option [ref=e214]: download
+                            - option [ref=e215]: upload
+                            - option [ref=e216]: overwrite
+                            - option [ref=e217]: create_dirs
+                            - option [ref=e218]: rename
+                            - option [ref=e219]: rename_files
+                            - option [ref=e220]: rename_dirs
+                            - option [ref=e221]: delete
+                            - option [ref=e222]: delete_files
+                            - option [ref=e223]: delete_dirs
+                            - option [ref=e224]: copy
+                            - option [ref=e225]: create_symlinks
+                            - option [ref=e226]: chmod
+                            - option [ref=e227]: chown
+                            - option [ref=e228]: chtimes
+                          - combobox [ref=e231] [cursor=pointer]:
+                            - list [ref=e232]:
+                              - listitem "*" [ref=e233]:
+                                - button "Remove item" [ref=e234]
+                                - generic [ref=e235]: "*"
+                            - searchbox "Search" [ref=e237]
+                      - generic [ref=e238]:
+                        - heading "Per-directory permissions" [level=3] [ref=e240]
+                        - generic [ref=e242]:
+                          - generic [ref=e245]: Wildcards are supported in paths, for example "/incoming/*" matches any directory within "/incoming"
+                          - generic [ref=e249]:
+                            - textbox "directory path, i.e. /dir" [ref=e251]
+                            - generic [ref=e252]:
+                              - listbox [ref=e253]:
+                                - option [ref=e254]: "*"
+                                - option [ref=e255]: list
+                                - option [ref=e256]: download
+                                - option [ref=e257]: upload
+                                - option [ref=e258]: overwrite
+                                - option [ref=e259]: create_dirs
+                                - option [ref=e260]: rename
+                                - option [ref=e261]: rename_files
+                                - option [ref=e262]: rename_dirs
+                                - option [ref=e263]: delete
+                                - option [ref=e264]: delete_files
+                                - option [ref=e265]: delete_dirs
+                                - option [ref=e266]: copy
+                                - option [ref=e267]: create_symlinks
+                                - option [ref=e268]: chmod
+                                - option [ref=e269]: chown
+                                - option [ref=e270]: chtimes
+                              - combobox [ref=e273] [cursor=pointer]:
+                                - list
+                                - searchbox "Search" [ref=e275]
+                            - link "    " [ref=e277] [cursor=pointer]:
+                              - /url: "#"
+                              - generic [ref=e278]:
+                                - generic [ref=e279]: 
+                                - generic: 
+                                - generic: 
+                                - generic: 
+                                - generic: 
+                          - link " Add" [ref=e281] [cursor=pointer]:
+                            - /url: "#"
+                            - generic [ref=e282]: 
+                            - text: Add
+                      - generic [ref=e283]:
+                        - heading "Per-directory name patterns restrictions" [level=3] [ref=e285]
+                        - generic [ref=e287]:
+                          - generic [ref=e290]: Comma separated denied or allowed files/directories, based on shell patterns. The match is case insensitive
+                          - generic [ref=e294]:
+                            - textbox "directory path, i.e. /dir" [ref=e296]
+                            - textbox "*.png,*.zip" [ref=e298]
+                            - generic [ref=e299]:
+                              - combobox [ref=e300]
+                              - combobox "Denied" [ref=e303] [cursor=pointer]:
+                                - textbox "Denied" [ref=e304]
+                            - generic [ref=e305]:
+                              - combobox [ref=e306]
+                              - combobox "Visible" [ref=e309] [cursor=pointer]:
+                                - textbox "Visible" [ref=e310]
+                            - link "    " [ref=e312] [cursor=pointer]:
+                              - /url: "#"
+                              - generic [ref=e313]:
+                                - generic [ref=e314]: 
+                                - generic: 
+                                - generic: 
+                                - generic: 
+                                - generic: 
+                          - link " Add" [ref=e316] [cursor=pointer]:
+                            - /url: "#"
+                            - generic [ref=e317]: 
+                            - text: Add
+                      - generic [ref=e318]:
+                        - heading "Access time restrictions" [level=3] [ref=e320]
+                        - generic [ref=e322]:
+                          - generic [ref=e325]: No restrictions means access is always allowed, the time must be set in the format HH:MM
+                          - generic [ref=e329]:
+                            - generic [ref=e330]:
+                              - combobox [ref=e331]
+                              - combobox "Sunday" [ref=e334] [cursor=pointer]:
+                                - textbox "Sunday" [ref=e335]
+                            - textbox "Start (HH:MM)" [ref=e337]
+                            - textbox "End (HH:MM)" [ref=e339]
+                            - link "    " [ref=e341] [cursor=pointer]:
+                              - /url: "#"
+                              - generic [ref=e342]:
+                                - generic [ref=e343]: 
+                                - generic: 
+                                - generic: 
+                                - generic: 
+                                - generic: 
+                          - link " Add" [ref=e345] [cursor=pointer]:
+                            - /url: "#"
+                            - generic [ref=e346]: 
+                            - text: Add
+                      - generic [ref=e347]:
+                        - generic [ref=e348]: Max sessions
+                        - generic [ref=e349]:
+                          - spinbutton "Max sessions" [ref=e350]: "0"
+                          - generic [ref=e351]: Maximum number of concurrent sessions. 0 means no limit
+                      - generic [ref=e352]:
+                        - generic [ref=e353]: Denied protocols
+                        - generic [ref=e354]:
+                          - listbox [ref=e355]:
+                            - option [ref=e356]: SSH
+                            - option [ref=e357]: FTP
+                            - option [ref=e358]: DAV
+                            - option [ref=e359]: HTTP
+                          - combobox [ref=e362] [cursor=pointer]:
+                            - list
+                            - searchbox "Search" [ref=e364]
+                      - generic [ref=e365]:
+                        - generic [ref=e366]: Denied login methods
+                        - generic [ref=e367]:
+                          - listbox [ref=e368]:
+                            - option [ref=e369]: publickey
+                            - option [ref=e370]: password
+                            - option [ref=e371]: password-over-SSH
+                            - option [ref=e372]: keyboard-interactive
+                            - option [ref=e373]: publickey+password
+                            - option [ref=e374]: publickey+keyboard-interactive
+                            - option [ref=e375]: TLSCertificate
+                            - option [ref=e376]: TLSCertificate+password
+                          - combobox [ref=e379] [cursor=pointer]:
+                            - list
+                            - searchbox "Search" [ref=e381]
+                          - generic [ref=e382]: "\"password\" is valid for all supported protocols, \"password-over-SSH\" only for SSH/SFTP/SCP"
+                      - generic [ref=e383]:
+                        - generic [ref=e384]: Require 2FA for
+                        - generic [ref=e385]:
+                          - listbox [ref=e386]:
+                            - option [ref=e387]: HTTP
+                            - option [ref=e388]: SSH
+                            - option [ref=e389]: FTP
+                          - combobox [ref=e392] [cursor=pointer]:
+                            - list
+                            - searchbox "Search" [ref=e394]
+                      - generic [ref=e395]:
+                        - generic [ref=e396]: Web client/REST API
+                        - generic [ref=e397]:
+                          - listbox [ref=e398]:
+                            - option [ref=e399]: write-disabled
+                            - option [ref=e400]: password-change-disabled
+                            - option [ref=e401]: password-reset-disabled
+                            - option [ref=e402]: publickey-change-disabled
+                            - option [ref=e403]: tls-cert-change-disabled
+                            - option [ref=e404]: mfa-disabled
+                            - option [ref=e405]: api-key-auth-change-disabled
+                            - option [ref=e406]: info-change-disabled
+                            - option [ref=e407]: shares-disabled
+                            - option [ref=e408]: shares-without-password-disabled
+                          - combobox [ref=e411] [cursor=pointer]:
+                            - list
+                            - searchbox "Search" [ref=e413]
+                      - generic [ref=e414]:
+                        - generic [ref=e415]: Denied IP/Mask
+                        - generic [ref=e416]:
+                          - textbox "Denied IP/Mask" [ref=e417]
+                          - generic [ref=e418]: Comma separated IP/Mask in CIDR format, for example "192.168.1.0/24,10.8.0.100/32"
+                      - generic [ref=e419]:
+                        - generic [ref=e420]: Allowed IP/Mask
+                        - generic [ref=e421]:
+                          - textbox "Allowed IP/Mask" [ref=e422]
+                          - generic [ref=e423]: Comma separated IP/Mask in CIDR format, for example "192.168.1.0/24,10.8.0.100/32"
+                - generic [ref=e424]:
+                  - heading "Disk quota and bandwidth limits" [level=2] [ref=e425] [cursor=pointer]:
+                    - button "Disk quota and bandwidth limits" [expanded] [ref=e426]:
+                      - generic [ref=e427]: Disk quota and bandwidth limits
+                  - generic "Disk quota and bandwidth limits" [ref=e428]:
+                    - generic [ref=e429]:
+                      - generic [ref=e430]:
+                        - generic [ref=e431]: Quota size
+                        - generic [ref=e432]:
+                          - textbox "Quota size" [ref=e433]: "0"
+                          - generic [ref=e434]: 0 means no limit. You can use MB/GB/TB suffix
+                        - generic [ref=e436]: Quota files
+                        - generic [ref=e437]:
+                          - spinbutton "Quota files" [ref=e438]: "0"
+                          - generic [ref=e439]: 0 means no limit
+                      - generic [ref=e440]:
+                        - generic [ref=e441]: Max upload size
+                        - generic [ref=e442]:
+                          - textbox "Max upload size" [ref=e443]: "0"
+                          - generic [ref=e444]: Maximum upload size for a single file. 0 means no limit. You can use MB/GB/TB suffix
+                      - generic [ref=e445]:
+                        - generic [ref=e446]: Bandwidth UL (KB/s)
+                        - generic [ref=e447]:
+                          - spinbutton "Bandwidth UL (KB/s)" [ref=e448]: "0"
+                          - generic [ref=e449]: 0 means no limit
+                        - generic [ref=e451]: Bandwidth DL (KB/s)
+                        - generic [ref=e452]:
+                          - spinbutton "Bandwidth DL (KB/s)" [ref=e453]: "0"
+                          - generic [ref=e454]: 0 means no limit
+                      - generic [ref=e455]:
+                        - heading "Per-source bandwidth speed limits" [level=3] [ref=e457]
+                        - generic [ref=e459]:
+                          - generic [ref=e463]:
+                            - generic [ref=e464]:
+                              - textbox [ref=e465]
+                              - generic [ref=e466]: Comma separated IP/Mask in CIDR format, for example "192.168.1.0/24,10.8.0.100/32"
+                            - generic [ref=e467]:
+                              - spinbutton [ref=e468]
+                              - generic [ref=e469]: UL (KB/s). 0 means no limit
+                            - generic [ref=e470]:
+                              - spinbutton [ref=e471]
+                              - generic [ref=e472]: DL (KB/s). 0 means no limit
+                            - link "    " [ref=e474] [cursor=pointer]:
+                              - /url: "#"
+                              - generic [ref=e475]:
+                                - generic [ref=e476]: 
+                                - generic: 
+                                - generic: 
+                                - generic: 
+                                - generic: 
+                          - link " Add" [ref=e478] [cursor=pointer]:
+                            - /url: "#"
+                            - generic [ref=e479]: 
+                            - text: Add
+                      - generic [ref=e480]:
+                        - generic [ref=e481]: Upload data transfer (MB)
+                        - generic [ref=e482]:
+                          - spinbutton "Upload data transfer (MB)" [ref=e483]: "0"
+                          - generic [ref=e484]: Maximum data transfer allowed for uploads. 0 means no limit
+                        - generic [ref=e486]: Download data transfer (MB)
+                        - generic [ref=e487]:
+                          - spinbutton "Download data transfer (MB)" [ref=e488]: "0"
+                          - generic [ref=e489]: Maximum data transfer allowed for downloads. 0 means no limit
+                      - generic [ref=e490]:
+                        - generic [ref=e491]: Total data transfer (MB)
+                        - generic [ref=e492]:
+                          - spinbutton "Total data transfer (MB)" [ref=e493]: "0"
+                          - generic [ref=e494]: Maximum data transfer allowed for uploads + downloads. Replace the individual limits. 0 means no limit
+                - generic [ref=e495]:
+                  - heading "Advanced settings" [level=2] [ref=e496] [cursor=pointer]:
+                    - button "Advanced settings" [expanded] [ref=e497]:
+                      - generic [ref=e498]: Advanced settings
+                  - generic "Advanced settings" [ref=e499]:
+                    - generic [ref=e500]:
+                      - generic [ref=e501]:
+                        - generic [ref=e502]: TLS username
+                        - generic [ref=e503]:
+                          - combobox [ref=e504]
+                          - combobox "---" [ref=e507] [cursor=pointer]:
+                            - textbox "---" [ref=e508]
+                          - generic [ref=e509]: Defines the TLS certificate field to use as username. Ignored if mutual TLS is disabled
+                      - generic [ref=e510]:
+                        - generic [ref=e511]: FTP security
+                        - generic [ref=e512]:
+                          - combobox [ref=e513]
+                          - combobox "Global settings" [ref=e516] [cursor=pointer]:
+                            - textbox "Global settings" [ref=e517]
+                          - generic [ref=e518]: Ignored if TLS is already globally required for all FTP users
+                      - generic [ref=e519]:
+                        - generic [ref=e520]: Initial directory
+                        - generic [ref=e521]:
+                          - textbox "Initial directory" [ref=e522]
+                          - generic [ref=e523]: Alternate initial directory to use instead of "/". Supported for SFTP/FTP/HTTP
+                      - generic [ref=e524]:
+                        - generic [ref=e525]: Hooks
+                        - generic [ref=e526]:
+                          - listbox [ref=e527]:
+                            - option [ref=e528]: External auth disabled
+                            - option [ref=e529]: Pre-login disabled
+                            - option [ref=e530]: Check password disabled
+                          - combobox [ref=e533] [cursor=pointer]:
+                            - list
+                            - searchbox "Search" [ref=e535]
+                      - generic [ref=e536]:
+                        - generic [ref=e537]: Anonymous user
+                        - generic [ref=e539]:
+                          - checkbox "Anonymous user Anonymous users are supported for FTP and WebDAV protocols and have read-only access" [ref=e540]
+                          - generic [ref=e541]: Anonymous users are supported for FTP and WebDAV protocols and have read-only access
+                      - generic [ref=e542]:
+                        - generic [ref=e543]: Disable filesystem checks
+                        - generic [ref=e545]:
+                          - checkbox "Disable filesystem checks Disable checks for existence and automatic creation of home directory and virtual folders" [ref=e546]
+                          - generic [ref=e547]: Disable checks for existence and automatic creation of home directory and virtual folders
+                      - generic [ref=e548]:
+                        - generic [ref=e549]: API key authentication
+                        - generic [ref=e551]:
+                          - checkbox "API key authentication Allow to impersonate the user, in REST API, with an API key" [ref=e552]
+                          - generic [ref=e553]: Allow to impersonate the user, in REST API, with an API key
+                      - generic [ref=e554]:
+                        - generic [ref=e555]: UID
+                        - spinbutton "UID" [ref=e557]: "0"
+                        - generic [ref=e559]: GID
+                        - spinbutton "GID" [ref=e561]: "0"
+              - button "Save" [ref=e563] [cursor=pointer]
+        - generic [ref=e566]: SFTPGo 2.7.1 13123486
+  - text:  
+  - generic: 

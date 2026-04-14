@@ -21,7 +21,7 @@ export class SftpValidateController {
     }
 
     try {
-      coordinator.validate(filePath);
+      coordinator.validate(decodeURIComponent(filePath));
       return response(200, "OK");
     } catch (err) {
       return response(400, (err as Error).message);
